@@ -489,6 +489,9 @@ static BOOL _highlightingSupported;
 
 - (BOOL)scrollToMatch:(NSString *)pattern searchOptions:(NSRegularExpressionOptions)options range:(NSRange)range
 {
+    // Calculates a valid range
+    range = NSIntersectionRange(NSMakeRange(0, self.text.length), range);
+    
     // Preliminary checks
     BOOL abort = NO;
     if (!pattern)
@@ -498,7 +501,7 @@ static BOOL _highlightingSupported;
 #endif
         abort = YES;
     }
-    else if (NSIntersectionRange(range, NSMakeRange(0, self.text.length)).length == 0)
+    else if (range.length == 0)
     {
 #if DEBUG
         NSLog(@"Specified range is out of bounds.");
@@ -513,6 +516,7 @@ static BOOL _highlightingSupported;
     
     // Optimization and coherence checks
     BOOL samePattern = [pattern isEqualToString:_regex.pattern];
+    BOOL sameOptions = (options == _regex.options);
     BOOL sameSearchRange = NSEqualRanges(range, _searchRange);
     
     // Sets new search range
@@ -534,12 +538,12 @@ static BOOL _highlightingSupported;
     if (_highlightingSupported && _highlightSearchResults)
     {
         [self initializePrimaryHighlights];
-        if (!(samePattern && sameSearchRange))
+        if (!(samePattern && sameOptions && sameSearchRange))
             [self initializeSecondaryHighlights];
     }
     
     // Scan index logic
-    if (sameSearchRange)
+    if (sameSearchRange && sameOptions)
     {
         // Same search pattern, go to next match
         if (_scanIndex && samePattern)
@@ -552,7 +556,7 @@ static BOOL _highlightingSupported;
         _scanIndex = range.location;
     
     // Gets match
-    NSRange matchRange = [_regex rangeOfFirstMatchInString:self.text options:options range:NSMakeRange(_scanIndex, range.location + range.length - _scanIndex)];
+    NSRange matchRange = [_regex rangeOfFirstMatchInString:self.text options:0 range:NSMakeRange(_scanIndex, range.location + range.length - _scanIndex)];
     
     // Word not found
     if (matchRange.location == NSNotFound)
