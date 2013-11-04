@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
-  s.name         = "ICTextView"
-  s.version      = "1.0.0"
-  s.summary      = "ICTextView is a UITextView subclass with optimized support for string/regex search and highlighting."
+  s.name         = 'ICTextView'
+  s.version      = '1.0.0'
+  s.summary      = 'ICTextView is a UITextView subclass with optimized support for string/regex search and highlighting.'
 
   s.description  = <<-DESC
   **ICTextView** is a UITextView subclass. It features:
@@ -13,14 +13,14 @@ Pod::Spec.new do |s|
   * Contains workarounds to many known iOS 7 UITextView bugs
   DESC
 
-  s.homepage     = "https://github.com/Exile90/ICTextView"
-  s.screenshots  = "https://github.com/Exile90/ICTextView/raw/master/screenshot.png"
+  s.homepage     = 'https://github.com/Exile90/ICTextView'
+  s.screenshots  = 'https://github.com/Exile90/ICTextView/raw/master/screenshot.png'
 
   s.license      = { :type => 'MIT', :file => 'LICENSE' }
-  s.author       = { "Ivano Bilenchi" => "exile@live.it" }
+  s.author       = { 'Ivano Bilenchi' => 'exile@live.it' }
 
   s.platform     = :ios, '4.0'
-  s.source       = { :git => "https://github.com/Exile90/ICTextView.git", :tag => "1.0.0" }
+  s.source       = { :git => 'https://github.com/Exile90/ICTextView.git', :tag => s.version.to_s }
 
   s.public_header_files = 'ICTextView/*.h'
   s.source_files  = 'ICTextView/*.{h,m}'
