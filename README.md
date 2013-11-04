@@ -1,5 +1,7 @@
 ## ICTextView
 
+![Screenshot](https://github.com/Exile90/ICTextView/raw/master/screenshot.png)
+
 #### Authors
 
 - Ivano Bilenchi ([@SoftHardW](http://www.twitter.com/SoftHardW))
@@ -46,7 +48,7 @@ The `rangeOfFoundString` property contains the range of the current search match
 You can get the actual string by calling the `foundString` method.
 
 The `resetSearch` method lets you restore the search variables to their starting values, effectively resetting the search.
-Calls to `resetSearch` cause the highlights to be deallocated, regardless of the "maxHighlightedMatches" variable.
+Calls to `resetSearch` cause the highlights to be deallocated, regardless of the `maxHighlightedMatches` variable.
 After this method has been called, ICTextView stops highlighting results until a new search is performed.
 
 ###### Content insets methods
