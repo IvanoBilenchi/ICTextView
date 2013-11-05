@@ -2,15 +2,18 @@
 
 ![Screenshot](https://github.com/Exile90/ICTextView/raw/master/screenshot.png)
 
+
 #### Authors
 
 - Ivano Bilenchi ([@SoftHardW](http://www.twitter.com/SoftHardW))
+
 
 #### Description
 
 ICTextView is a UITextView subclass with optimized support for string/regex search and highlighting.
 
 It also features some iOS 7 specific improvements and bugfixes to the standard UITextView.
+
 
 #### Features
 
@@ -20,21 +23,29 @@ It also features some iOS 7 specific improvements and bugfixes to the standard U
 - Methods to account for contentInsets in iOS 7
 - Contains workarounds to many known iOS 7 UITextView bugs
 
+
 #### Compatibility
 
 ICTextView is compatible with iOS 4.x and above. Match highlighting is supported starting from iOS 5.x.
 
 **!!!WARNING!!!** - contains ARC enabled code. Beware, MRC purists.
 
+
 #### Installation
 
-ICTextView can be installed via [Cocoapods](http://cocoapods.org) (just add `pod ICTextView` to your Podfile) or
-as a [Git submodule](http://git-scm.com/book/en/Git-Tools-Submodules). Alternatively, you can just grab the *ICTextView.h*
-and *ICTextView.m* files and put them in your project. `#import ICTextView.h` and you're ready to go!
+ICTextView can be installed via [Cocoapods](http://cocoapods.org) (just add `pod 'ICTextView'` to your Podfile) or
+as a [Git submodule](http://git-scm.com/book/en/Git-Tools-Submodules). Alternatively, you can clone this repo, 
+or even just grab the *ICTextView.h* and *ICTextView.m* files and put them in your project.
+
+ICTextView just requires the *Foundation*, *UIKIt* and *QuartzCore* frameworks.
+
+`#import ICTextView.h` and you're ready to go.
+
 
 #### Configuration:
 
 See comments in the `#pragma mark - Configuration` section of the *ICTextView.h* header file.
+
 
 #### Usage
 
@@ -65,6 +76,7 @@ This was the default behavior for `scrollRangeToVisible:` before iOS 7, but it h
 This method calls `scrollRangeToVisible:` in iOS 6.x and below, and has a custom implementation in iOS 7.
 
 The other methods are pretty much self-explanatory. See the `#pragma mark - Misc` section for further info.
+
 
 #### License:
 
