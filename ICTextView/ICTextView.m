@@ -1,5 +1,5 @@
 /**
- * ICTextView.m - 1.0.0
+ * ICTextView.m - 1.0.1
  * --------------------
  *
  * Copyright (c) 2013 Ivano Bilenchi
@@ -29,7 +29,7 @@
 #import "ICTextView.h"
 #import <QuartzCore/QuartzCore.h>
 
-// For old Xcode versions
+// For old SDKs
 #ifndef NSFoundationVersionNumber_iOS_6_0
 #define NSFoundationVersionNumber_iOS_6_0 993.0
 #endif
@@ -105,7 +105,7 @@ static BOOL _highlightingSupported;
     
     // Version specific implementation
 #ifdef __IPHONE_6_0
-    if (NSFoundationVersionNumber >= NSFoundationVersionNumber_iOS_6_0)
+    if (NSFoundationVersionNumber < NSFoundationVersionNumber_iOS_6_0)
     {
         // iOS 6.x and newer implementation
         CGRect previousRect = CGRectZero;
@@ -130,8 +130,8 @@ static BOOL _highlightingSupported;
         [highlightsForRange addObject:[self addHighlightAtRect:previousRect]];
     }
     else
-    {
 #endif
+    {
         // iOS 5.x implementation (a bit slower)
         CGRect previousRect = CGRectZero;
         UITextPosition *start = textRange.start;
@@ -156,9 +156,7 @@ static BOOL _highlightingSupported;
             previousRect = [self firstRectForRange:textRange];
             [highlightsForRange addObject:[self addHighlightAtRect:previousRect]];
         } while (hasMoreLines);
-#ifdef __IPHONE_6_0
     }
-#endif
     return highlightsForRange;
 }
 
@@ -336,21 +334,29 @@ static BOOL _highlightingSupported;
 
 #pragma mark - Overrides
 
+// Resets search if editable
+- (BOOL)becomeFirstResponder
+{
+    if (self.editable)
+        [self resetSearch];
+    return [super becomeFirstResponder];
+}
+
+// Init override for custom initialization
 - (id)initWithFrame:(CGRect)frame
 {
 #ifdef __IPHONE_7_0
-    if (NSFoundationVersionNumber <= NSFoundationVersionNumber_iOS_6_1)
-    {
+    if (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_6_1)
+        return [self initWithFrame:frame textContainer:nil];
+    else
 #endif
+    {
         self = [super initWithFrame:frame];
         if (self && _highlightingSupported)
             [self initialize];
         return self;
-#ifdef __IPHONE_7_0
     }
-    else
-        return [self initWithFrame:frame textContainer:nil];
-#endif
+
 }
 
 #ifdef __IPHONE_7_0
@@ -382,6 +388,7 @@ static BOOL _highlightingSupported;
     _primaryHighlightColor = [UIColor colorWithRed:150.0/255.0 green:200.0/255.0 blue:1.0 alpha:1.0];
     _secondaryHighlights = [[NSMutableOrderedSet alloc] init];
     _secondaryHighlightColor = [UIColor colorWithRed:215.0/255.0 green:240.0/255.0 blue:1.0 alpha:1.0];
+    
     // Detects _UITextContainerView or UIWebDocumentView (subview with text) for highlight placement
     for (UIView *view in self.subviews)
     {
@@ -641,30 +648,44 @@ static BOOL _highlightingSupported;
         UITextPosition *startPosition = [self positionFromPosition:self.beginningOfDocument offset:range.location];
         UITextPosition *endPosition = [self positionFromPosition:startPosition offset:range.length];
         UITextRange *textRange = [self textRangeFromPosition:startPosition toPosition:endPosition];
-        CGRect workRect = [self firstRectForRange:textRange];
+        CGRect rect = [self firstRectForRange:textRange];
         
+        // Scrolls to visible rect
+        [self scrollRectToVisible:rect animated:YES consideringInsets:YES];
+    }
+    else
+#endif
+        [super scrollRangeToVisible:range];
+}
+
+// Scrolls to visible rect, eventually considering insets
+- (void)scrollRectToVisible:(CGRect)rect animated:(BOOL)animated consideringInsets:(BOOL)considerInsets
+{
+#ifdef __IPHONE_7_0
+    if (considerInsets && (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_6_1))
+    {
         // Gets bounds and calculates visible rect
         CGRect bounds = self.bounds;
         UIEdgeInsets contentInset = self.contentInset;
         CGRect visibleRect = [self visibleRectConsideringInsets:YES];
         
-        // Do not scroll if workRect is on screen
-        if (!CGRectContainsRect(visibleRect, workRect))
+        // Do not scroll if rect is on screen
+        if (!CGRectContainsRect(visibleRect, rect))
         {
             CGPoint contentOffset = self.contentOffset;
             // Calculates new contentOffset
-            if (workRect.origin.y < visibleRect.origin.y)
-                // workRect precedes bounds, scroll up
-                contentOffset.y = workRect.origin.y - contentInset.top;
+            if (rect.origin.y < visibleRect.origin.y)
+                // rect precedes bounds, scroll up
+                contentOffset.y = rect.origin.y - contentInset.top;
             else
-                // workRect follows bounds, scroll down
-                contentOffset.y = workRect.origin.y + contentInset.bottom + workRect.size.height - bounds.size.height;
-            [self setContentOffset:contentOffset animated:YES];
+                // rect follows bounds, scroll down
+                contentOffset.y = rect.origin.y + contentInset.bottom + rect.size.height - bounds.size.height;
+            [self setContentOffset:contentOffset animated:animated];
         }
     }
     else
 #endif
-        [super scrollRangeToVisible:range];
+        [super scrollRectToVisible:rect animated:animated];
 }
 
 // Returns visible range, eventually considering insets

@@ -6,7 +6,7 @@
 *
 * Version:
 * --------
-* 1.0.0
+* 1.0.1
 *
 *
 * Authors:
@@ -66,7 +66,8 @@
 *
 *   Content insets methods:
 *   -----------------------
-*   "scrollRangeToVisible:consideringInsets:" lets you scroll until a certain range is visible, accounting for content insets.
+*   The "scrollRangeToVisible:consideringInsets:" and "scrollRectToVisible:animated:consideringInsets:" methods let you scroll
+*   until a certain range or rect is visible, eventually accounting for content insets.
 *   This was the default behavior for "scrollRangeToVisible:" before iOS 7, but it has changed since (possibly because of a bug).
 *   This method calls "scrollRangeToVisible:" in iOS 6.x and below, and has a custom implementation in iOS 7.
 *
@@ -155,6 +156,9 @@
 
 // Scrolls to visible range, eventually considering insets
 - (void)scrollRangeToVisible:(NSRange)range consideringInsets:(BOOL)considerInsets;
+
+// Scrolls to visible rect, eventually considering insets
+- (void)scrollRectToVisible:(CGRect)rect animated:(BOOL)animated consideringInsets:(BOOL)considerInsets;
 
 // Returns visible range, with start and end position, eventually considering insets
 - (NSRange)visibleRangeConsideringInsets:(BOOL)considerInsets;
