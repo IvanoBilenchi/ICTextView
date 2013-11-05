@@ -26,6 +26,12 @@ ICTextView is compatible with iOS 4.x and above. Match highlighting is supported
 
 **!!!WARNING!!!** - contains ARC enabled code. Beware, MRC purists.
 
+#### Installation
+
+ICTextView can be installed via [Cocoapods](http://cocoapods.org) (just add `pod ICTextView` to your Podfile) or
+as a [Git submodule](http://git-scm.com/book/en/Git-Tools-Submodules). Alternatively, you can just grab the *ICTextView.h*
+and *ICTextView.m* files and put them in your project. `#import ICTextView.h` and you're ready to go!
+
 #### Configuration:
 
 See comments in the `#pragma mark - Configuration` section of the *ICTextView.h* header file.
@@ -53,7 +59,8 @@ After this method has been called, ICTextView stops highlighting results until a
 
 ###### Content insets methods
 
-`scrollRangeToVisible:consideringInsets:` lets you scroll until a certain range is visible, accounting for content insets.
+The "scrollRangeToVisible:consideringInsets:" and "scrollRectToVisible:animated:consideringInsets:" methods let you scroll
+until a certain range or rect is visible, eventually accounting for content insets.
 This was the default behavior for `scrollRangeToVisible:` before iOS 7, but it has changed since (possibly because of a bug).
 This method calls `scrollRangeToVisible:` in iOS 6.x and below, and has a custom implementation in iOS 7.
 

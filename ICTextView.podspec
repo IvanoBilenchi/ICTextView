@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = 'ICTextView'
-  s.version      = '1.0.0'
+  s.version      = '1.0.1'
   s.summary      = 'ICTextView is a UITextView subclass with optimized support for string/regex search and highlighting.'
 
   s.description  = <<-DESC
@@ -24,7 +24,7 @@ Pod::Spec.new do |s|
 
   s.public_header_files = 'ICTextView/*.h'
   s.source_files  = 'ICTextView/*.{h,m}'
-  s.exclude_files = 'screenshot.png'
+  s.exclude_files = 'screenshot.png', 'ICTextViewExample', 'ICTextViewExample.xcodeproj'
 
   s.frameworks = 'UIKit', 'QuartzCore'
   s.requires_arc = true
