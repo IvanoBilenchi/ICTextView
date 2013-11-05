@@ -105,7 +105,7 @@ static BOOL _highlightingSupported;
     
     // Version specific implementation
 #ifdef __IPHONE_6_0
-    if (NSFoundationVersionNumber < NSFoundationVersionNumber_iOS_6_0)
+    if (NSFoundationVersionNumber >= NSFoundationVersionNumber_iOS_6_0)
     {
         // iOS 6.x and newer implementation
         CGRect previousRect = CGRectZero;
