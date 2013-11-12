@@ -556,7 +556,7 @@ static BOOL _highlightingSupported;
         if (_scanIndex && samePattern)
             _scanIndex += _rangeOfFoundString.length;
         // Scan index out of range
-        if (_scanIndex <= range.location || _scanIndex >= (range.location + range.length))
+        if (_scanIndex < range.location || _scanIndex >= (range.location + range.length))
             _scanIndex = range.location;
     }
     else
@@ -565,7 +565,7 @@ static BOOL _highlightingSupported;
     // Gets match
     NSRange matchRange = [_regex rangeOfFirstMatchInString:self.text options:0 range:NSMakeRange(_scanIndex, range.location + range.length - _scanIndex)];
     
-    // Word not found
+    // Match not found
     if (matchRange.location == NSNotFound)
     {
         if (_scanIndex)
@@ -579,7 +579,7 @@ static BOOL _highlightingSupported;
         return NO;
     }
     
-    // Word found, saves state
+    // Match found, saves state
     _rangeOfFoundString = matchRange;
     _scanIndex = matchRange.location;
     _shouldUpdateScanIndex = NO;

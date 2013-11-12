@@ -162,8 +162,6 @@
 
 // Returns visible range, with start and end position, eventually considering insets
 - (NSRange)visibleRangeConsideringInsets:(BOOL)considerInsets;
-
-// Returns visible range, with start and end position, eventually considering insets
 - (NSRange)visibleRangeConsideringInsets:(BOOL)considerInsets startPosition:(UITextPosition *__autoreleasing *)startPosition endPosition:(UITextPosition *__autoreleasing *)endPosition;
 
 // Returns visible rect, eventually considering insets
