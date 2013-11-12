@@ -42,7 +42,7 @@ ICTextView just requires the *Foundation*, *UIKIt* and *QuartzCore* frameworks.
 `#import ICTextView.h` and you're ready to go.
 
 
-#### Configuration:
+#### Configuration
 
 See comments in the `#pragma mark - Configuration` section of the *ICTextView.h* header file.
 
@@ -70,7 +70,7 @@ After this method has been called, ICTextView stops highlighting results until a
 
 ###### Content insets methods
 
-The "scrollRangeToVisible:consideringInsets:" and "scrollRectToVisible:animated:consideringInsets:" methods let you scroll
+The `scrollRangeToVisible:consideringInsets:` and `scrollRectToVisible:animated:consideringInsets:` methods let you scroll
 until a certain range or rect is visible, eventually accounting for content insets.
 This was the default behavior for `scrollRangeToVisible:` before iOS 7, but it has changed since (possibly because of a bug).
 This method calls `scrollRangeToVisible:` in iOS 6.x and below, and has a custom implementation in iOS 7.
@@ -78,6 +78,6 @@ This method calls `scrollRangeToVisible:` in iOS 6.x and below, and has a custom
 The other methods are pretty much self-explanatory. See the `#pragma mark - Misc` section for further info.
 
 
-#### License:
+#### License
 
 ICTextView is available under the MIT license. See the LICENSE file for more info.
