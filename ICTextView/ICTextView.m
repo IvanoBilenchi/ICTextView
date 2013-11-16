@@ -342,7 +342,15 @@ static BOOL _highlightingSupported;
     return [super becomeFirstResponder];
 }
 
-// Init override for custom initialization
+// Init overrides for custom initialization
+- (id)initWithCoder:(NSCoder *)aDecoder
+{
+    self = [super initWithCoder:aDecoder];
+    if (self)
+        [self initialize];
+    return self;
+}
+
 - (id)initWithFrame:(CGRect)frame
 {
 #ifdef __IPHONE_7_0
@@ -356,7 +364,6 @@ static BOOL _highlightingSupported;
             [self initialize];
         return self;
     }
-
 }
 
 #ifdef __IPHONE_7_0
