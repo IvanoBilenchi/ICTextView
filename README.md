@@ -21,7 +21,7 @@ It also features some iOS 7 specific improvements and bugfixes to the standard U
 - Highly customizable
 - Doesn't use delegate methods (you can still implement your own)
 - Methods to account for contentInsets in iOS 7
-- Contains workarounds to many known iOS 7 UITextView bugs
+- Contains workarounds to some known iOS 7 UITextView bugs
 
 
 #### Compatibility
@@ -33,13 +33,13 @@ ICTextView is compatible with iOS 4.x and above. Match highlighting is supported
 
 #### Installation
 
-ICTextView can be installed via [Cocoapods](http://cocoapods.org) (just add `pod 'ICTextView'` to your Podfile) or
+ICTextView can be installed via [Cocoapods](http://cocoapods.org) (just add `pod 'ICTextView'` to your Podfile, then run `pod install`) or
 as a [Git submodule](http://git-scm.com/book/en/Git-Tools-Submodules). Alternatively, you can clone this repo, 
 or even just grab the *ICTextView.h* and *ICTextView.m* files and put them in your project.
 
-ICTextView just requires the *Foundation*, *UIKIt* and *QuartzCore* frameworks.
+ICTextView requires the *QuartzCore* framework.
 
-`#import ICTextView.h` and you're ready to go.
+`#import "ICTextView.h"` and you're ready to go.
 
 
 #### Configuration
