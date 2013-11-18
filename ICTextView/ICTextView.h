@@ -141,7 +141,7 @@
 // Note: decreasing/disabling this may improve performance when self.text is very big
 @property (nonatomic) NSTimeInterval scrollAutoRefreshDelay;
 
-// Range of string found during last search ({NSNotFound, 0} if not found)
+// Range of string found during last search ({0, 0} on init and after resetSearch // {NSNotFound, 0} if not found)
 @property (nonatomic, readonly) NSRange rangeOfFoundString;
 
 

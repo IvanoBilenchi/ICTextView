@@ -423,7 +423,7 @@ static BOOL _highlightingSupported;
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
     self = [super initWithCoder:aDecoder];
-    if (self)
+    if (self && _highlightingSupported)
         [self initialize];
     return self;
 }
@@ -540,7 +540,7 @@ static BOOL _highlightingSupported;
         [_autoRefreshTimer invalidate];
         _autoRefreshTimer = nil;
     }
-    _rangeOfFoundString = NSMakeRange(NSNotFound,0);
+    _rangeOfFoundString = NSMakeRange(0,0);
     _regex = nil;
     _scanIndex = 0;
     _searchRange = NSMakeRange(0,0);
