@@ -1,16 +1,16 @@
 Pod::Spec.new do |s|
   s.name         = 'ICTextView'
-  s.version      = '1.0.1'
-  s.summary      = 'ICTextView is a UITextView subclass with optimized support for string/regex search and highlighting.'
+  s.version      = '1.0.2'
+  s.summary      = 'UITextView subclass with optimized support for string/regex search and highlighting.'
 
   s.description  = <<-DESC
-  **ICTextView** is a UITextView subclass. It features:
+  **ICTextView** is a UITextView subclass. Features:
 
   * Support for string and regex search and highlighting
   * Highly customizable
   * Doesn't use delegate methods (you can still implement your own)
   * Methods to account for contentInsets in iOS 7
-  * Contains workarounds to many known iOS 7 UITextView bugs
+  * Workarounds to many known iOS 7 UITextView bugs
   DESC
 
   s.homepage     = 'https://github.com/Exile90/ICTextView'

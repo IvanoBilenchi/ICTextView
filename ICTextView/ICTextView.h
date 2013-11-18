@@ -6,7 +6,7 @@
 *
 * Version:
 * --------
-* 1.0.1
+* 1.0.2
 *
 *
 * Authors:
@@ -38,7 +38,7 @@
 *
 * Configuration:
 * --------------
-* See comments in the "#pragma mark - Configuration" section.
+* See comments in the `#pragma mark - Configuration` section.
 *
 *
 * Usage:
@@ -46,32 +46,46 @@
 *
 *   Search:
 *   -------
-*   Searches can be performed via the "scrollToMatch:searchOptions:range:" and "scrollToString:searchOptions:range:" methods.
+*   Searches can be performed via the `scrollToMatch:searchOptions:range:` and `scrollToString:searchOptions:range:` methods.
 *   If a match is found, ICTextView highlights a primary match, and starts highlighting other matches while the user scrolls.
 *
-*   "scrollToMatch:" performs regex searches, while "scrollToString:" searches for string literals.
-*   Both search methods are regex-powered, and therefore make use of "NSRegularExpressionOptions".
+*   `scrollToMatch:` performs regex searches, while `scrollToString:` searches for string literals.
+*   Both search methods are regex-powered, and therefore make use of `NSRegularExpressionOptions`.
 *
 *   Searching for the same pattern multiple times will automatically match the next result, you don't need to update the range argument.
 *   In fact, you should only specify it if you wish to restrict the search to a specific text range.
 *   Search is optimized when the specified range and search pattern do not change (aka repeated searches).
 *
-*   The "rangeOfFoundString" property contains the range of the current search match.
-*   You can get the actual string by calling the "foundString" method.
+*   The `rangeOfFoundString` property contains the range of the current search match.
+*   You can get the actual string by calling the `foundString` method.
 *
-*   The "resetSearch" method lets you restore the search variables to their starting values, effectively resetting the search.
-*   Calls to "resetSearch" cause the highlights to be deallocated, regardless of the "maxHighlightedMatches" variable.
+*   The `resetSearch` method lets you restore the search variables to their starting values, effectively resetting the search.
+*   Calls to `resetSearch` cause the highlights to be deallocated, regardless of the `maxHighlightedMatches` variable.
 *   After this method has been called, ICTextView stops highlighting results until a new search is performed.
 *
 *
 *   Content insets methods:
 *   -----------------------
-*   The "scrollRangeToVisible:consideringInsets:" and "scrollRectToVisible:animated:consideringInsets:" methods let you scroll
+*   The `scrollRangeToVisible:consideringInsets:` and `scrollRectToVisible:animated:consideringInsets:` methods let you scroll
 *   until a certain range or rect is visible, eventually accounting for content insets.
-*   This was the default behavior for "scrollRangeToVisible:" before iOS 7, but it has changed since (possibly because of a bug).
-*   This method calls "scrollRangeToVisible:" in iOS 6.x and below, and has a custom implementation in iOS 7.
+*   This was the default behavior for `scrollRangeToVisible:` before iOS 7, but it has changed since (possibly because of a bug).
+*   This method calls `scrollRangeToVisible:` in iOS 6.x and below, and has a custom implementation in iOS 7.
 *
-*   The other methods are pretty much self-explanatory. See the "#pragma mark - Misc" section for further info.
+*   The other methods are pretty much self-explanatory. See the `#pragma mark - Misc` section for further info.
+*
+*
+* iOS 7 UITextView Bugfixes
+* -------------------------
+* Long story short, iOS 7 completely broke `UITextView`. `ICTextView` contains fixes for some very common issues:
+*
+* - NSTextContainer bugfix: `UITextView` initialized via `initWithFrame:` had an erratic behavior due to an uninitialized or wrong `NSTextContainer`
+* - Caret bugfix: the caret didn't consider `contentInset` and often went out of the visible area
+* - characterRangeAtPoint bugfix: `characterRangeAtPoint:` always returned `nil`
+*
+* These fixes, combined with the custom methods to account for `contentInset`, should make working with `ICTextView` much more bearable
+* than working with the standard `UITextView`.
+*
+* Bugfixes introduced by `ICTextView` will be removed (or isolated) as soon as they are fixed by Apple.
 *
 *
 * License:
