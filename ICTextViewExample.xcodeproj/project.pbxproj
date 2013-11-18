@@ -11,7 +11,6 @@
 		3AE5DAB11828FE9600E8EB28 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AE5DAB01828FE9600E8EB28 /* CoreGraphics.framework */; };
 		3AE5DAB31828FE9600E8EB28 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AE5DAB21828FE9600E8EB28 /* UIKit.framework */; };
 		3AE5DAF81829073100E8EB28 /* ICAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE5DAF11829073100E8EB28 /* ICAppDelegate.m */; };
-		3AE5DAF91829073100E8EB28 /* ICTextViewExample-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3AE5DAF21829073100E8EB28 /* ICTextViewExample-Info.plist */; };
 		3AE5DAFA1829073100E8EB28 /* ICViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE5DAF51829073100E8EB28 /* ICViewController.m */; };
 		3AE5DAFC1829073100E8EB28 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE5DAF71829073100E8EB28 /* main.m */; };
 		3AE5DAFF1829081F00E8EB28 /* ICTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE5DAFE1829081F00E8EB28 /* ICTextView.m */; };
@@ -154,7 +153,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				3AE5DB0018290A4700E8EB28 /* ICTextView.h in Resources */,
-				3AE5DAF91829073100E8EB28 /* ICTextViewExample-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
