@@ -1,30 +1,30 @@
 /**
- * ICTextView.m - 1.0.1
- * --------------------
- *
- * Copyright (c) 2013 Ivano Bilenchi
- *
- * Permission is hereby granted, free of charge, to any person
- * obtaining a copy of this software and associated documentation
- * files (the "Software"), to deal in the Software without
- * restriction, including without limitation the rights to use,
- * copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following
- * conditions:
- *
- * The above copyright notice and this permission notice shall be
- * included in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
- * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
- * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
- * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
- * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
- * OTHER DEALINGS IN THE SOFTWARE.
- **/
+* ICTextView.m - 1.0.2
+* --------------------
+*
+* Copyright (c) 2013 Ivano Bilenchi
+*
+* Permission is hereby granted, free of charge, to any person
+* obtaining a copy of this software and associated documentation
+* files (the "Software"), to deal in the Software without
+* restriction, including without limitation the rights to use,
+* copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the
+* Software is furnished to do so, subject to the following
+* conditions:
+*
+* The above copyright notice and this permission notice shall be
+* included in all copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+* OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+* NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+* HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+* WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+* FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+* OTHER DEALINGS IN THE SOFTWARE.
+**/
 
 #import "ICTextView.h"
 #import <QuartzCore/QuartzCore.h>
@@ -39,7 +39,10 @@
 #endif
 
 // Document subview tag
-#define UIDocumentViewTag 181337
+typedef enum
+{
+    ICTagTextSubview = 181337
+} ICTag;
 
 // Private iVars
 @interface ICTextView ()
@@ -57,8 +60,8 @@
     BOOL _performedNewScroll;
     BOOL _shouldUpdateScanIndex;
     
-    // TODO: remove iOS 7 characterRangeAtPoint: bugfix when an official fix is available
-    BOOL _hasAppliediOS7Bugfix;
+    // TODO: remove iOS 7 bugfixes when an official fix is available
+    BOOL _appliedCharacterRangeAtPointBugfix;
 }
 @end
 
@@ -94,7 +97,7 @@ static BOOL _highlightingSupported;
     highlight.layer.cornerRadius = _highlightCornerRadius < 0.0 ? frame.size.height * 0.2 : _highlightCornerRadius;
     highlight.backgroundColor = _secondaryHighlightColor;
     [_secondaryHighlights addObject:highlight];
-    [self insertSubview:highlight belowSubview:[self viewWithTag:UIDocumentViewTag]];
+    [self insertSubview:highlight belowSubview:[self viewWithTag:ICTagTextSubview]];
     return highlight;
 }
 
@@ -261,6 +264,41 @@ static BOOL _highlightingSupported;
     }
 }
 
+// Convenience method used in init overrides
+- (void)initialize
+{
+    _highlightCornerRadius = -1.0;
+    _highlightsByRange = [[NSMutableDictionary alloc] init];
+    _highlightSearchResults = YES;
+    _maxHighlightedMatches = 100;
+    _scrollAutoRefreshDelay = 0.2;
+    _primaryHighlights = [[NSMutableArray alloc] init];
+    _primaryHighlightColor = [UIColor colorWithRed:150.0/255.0 green:200.0/255.0 blue:1.0 alpha:1.0];
+    _secondaryHighlights = [[NSMutableOrderedSet alloc] init];
+    _secondaryHighlightColor = [UIColor colorWithRed:215.0/255.0 green:240.0/255.0 blue:1.0 alpha:1.0];
+    
+    // Detects _UITextContainerView or UIWebDocumentView (subview with text) for highlight placement
+    for (UIView *view in self.subviews)
+    {
+        if ([view isKindOfClass:NSClassFromString(@"_UITextContainerView")] || [view isKindOfClass:NSClassFromString(@"UIWebDocumentView")])
+        {
+            view.tag = ICTagTextSubview;
+            break;
+        }
+    }
+    
+    // TODO: remove iOS 7 characterRangeAtPoint: bugfix when an official fix is available
+#ifdef __IPHONE_7_0
+    if (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_6_1)
+    {
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(textChanged)
+                                                     name:UITextViewTextDidChangeNotification
+                                                   object:self];
+    }
+#endif
+}
+
 // Initializes highlights
 - (void)initializeHighlights
 {
@@ -303,6 +341,16 @@ static BOOL _highlightingSupported;
     _performedNewScroll = YES;
 }
 
+// TODO: remove iOS 7 characterRangeAtPoint: bugfix when an official fix is available
+#ifdef __IPHONE_7_0
+- (void)characterRangeAtPointBugFix
+{
+    [self select:self];
+    [self setSelectedTextRange:nil];
+    _appliedCharacterRangeAtPointBugfix = YES;
+}
+#endif
+
 // Called when scroll animation has ended
 - (void)scrollEnded
 {
@@ -332,7 +380,27 @@ static BOOL _highlightingSupported;
     }
 }
 
+// TODO: remove iOS 7 caret bugfix when an official fix is available
+#ifdef __IPHONE_7_0
+- (void)textChanged
+{
+    UITextRange *selectedTextRange = self.selectedTextRange;
+    if (selectedTextRange)
+        [self scrollRectToVisible:[self caretRectForPosition:selectedTextRange.end] animated:NO consideringInsets:YES];
+}
+#endif
+
 #pragma mark - Overrides
+
+// TODO: remove iOS 7 characterRangeAtPoint: bugfix when an official fix is available
+#ifdef __IPHONE_7_0
+- (void)awakeFromNib
+{
+    [super awakeFromNib];
+    if (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_6_1 && !_appliedCharacterRangeAtPointBugfix)
+        [self characterRangeAtPointBugFix];
+}
+#endif
 
 // Resets search if editable
 - (BOOL)becomeFirstResponder
@@ -341,6 +409,15 @@ static BOOL _highlightingSupported;
         [self resetSearch];
     return [super becomeFirstResponder];
 }
+
+// TODO: remove iOS 7 caret bugfix when an official fix is available
+#ifdef __IPHONE_7_0
+- (void)dealloc
+{
+    if (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_6_1)
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+#endif
 
 // Init overrides for custom initialization
 - (id)initWithCoder:(NSCoder *)aDecoder
@@ -366,8 +443,8 @@ static BOOL _highlightingSupported;
     }
 }
 
-#ifdef __IPHONE_7_0
 // TODO: remove iOS 7 NSTextContainer bugfix when an official fix is available
+#ifdef __IPHONE_7_0
 - (instancetype)initWithFrame:(CGRect)frame textContainer:(NSTextContainer *)textContainer
 {
     NSTextStorage *textStorage = [[NSTextStorage alloc] init];
@@ -375,6 +452,7 @@ static BOOL _highlightingSupported;
     [textStorage addLayoutManager:layoutManager];
     if (!textContainer)
         textContainer = [[NSTextContainer alloc] initWithSize:frame.size];
+    textContainer.heightTracksTextView = YES;
     [layoutManager addTextContainer:textContainer];
     self = [super initWithFrame:frame textContainer:textContainer];
     if (self && _highlightingSupported)
@@ -383,35 +461,10 @@ static BOOL _highlightingSupported;
 }
 #endif
 
-// Convenience method used in init overrides
-- (void)initialize
-{
-    _highlightCornerRadius = -1.0;
-    _highlightsByRange = [[NSMutableDictionary alloc] init];
-    _highlightSearchResults = YES;
-    _maxHighlightedMatches = 100;
-    _scrollAutoRefreshDelay = 0.2;
-    _primaryHighlights = [[NSMutableArray alloc] init];
-    _primaryHighlightColor = [UIColor colorWithRed:150.0/255.0 green:200.0/255.0 blue:1.0 alpha:1.0];
-    _secondaryHighlights = [[NSMutableOrderedSet alloc] init];
-    _secondaryHighlightColor = [UIColor colorWithRed:215.0/255.0 green:240.0/255.0 blue:1.0 alpha:1.0];
-    
-    // Detects _UITextContainerView or UIWebDocumentView (subview with text) for highlight placement
-    for (UIView *view in self.subviews)
-    {
-        if ([view isKindOfClass:NSClassFromString(@"_UITextContainerView")] || [view isKindOfClass:NSClassFromString(@"UIWebDocumentView")])
-        {
-            view.tag = UIDocumentViewTag;
-            break;
-        }
-    }
-}
-
 // Executed while scrollView is scrolling
 - (void)setContentOffset:(CGPoint)contentOffset
 {
     [super setContentOffset:contentOffset];
-    
     if (_highlightingSupported && _highlightSearchResults)
     {
         // scrollView has scrolled
@@ -448,17 +501,23 @@ static BOOL _highlightingSupported;
     _scrollAutoRefreshDelay = (scrollAutoRefreshDelay > 0.0 && scrollAutoRefreshDelay < 0.1) ? 0.1 : scrollAutoRefreshDelay;
 }
 
+// TODO: remove iOS 7 caret bugfix when an official fix is available
+#ifdef __IPHONE_7_0
+- (void)setSelectedTextRange:(UITextRange *)selectedTextRange
+{
+    [super setSelectedTextRange:selectedTextRange];
+    if (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_6_1 && selectedTextRange)
+        [self scrollRectToVisible:[self caretRectForPosition:selectedTextRange.end] animated:NO consideringInsets:YES];
+}
+#endif
+
 // TODO: remove iOS 7 characterRangeAtPoint: bugfix when an official fix is available
 #ifdef __IPHONE_7_0
 - (void)setText:(NSString *)text
 {
     [super setText:text];
-    if (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_6_1 && !_hasAppliediOS7Bugfix && text.length > 1)
-    {
-        [self select:self];
-        [self setSelectedTextRange:nil];
-        _hasAppliediOS7Bugfix = YES;
-    }
+    if (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_6_1 && !_appliedCharacterRangeAtPointBugfix && text.length > 1)
+        [self characterRangeAtPointBugFix];
 }
 #endif
 
@@ -560,7 +619,7 @@ static BOOL _highlightingSupported;
     if (sameSearchRange && sameOptions)
     {
         // Same search pattern, go to next match
-        if (_scanIndex && samePattern)
+        if (samePattern)
             _scanIndex += _rangeOfFoundString.length;
         // Scan index out of range
         if (_scanIndex < range.location || _scanIndex >= (range.location + range.length))
@@ -575,6 +634,7 @@ static BOOL _highlightingSupported;
     // Match not found
     if (matchRange.location == NSNotFound)
     {
+        _rangeOfFoundString = NSMakeRange(NSNotFound, 0);
         if (_scanIndex)
         {
             // Starts from top
@@ -582,7 +642,6 @@ static BOOL _highlightingSupported;
             return [self scrollToMatch:pattern searchOptions:options range:range];
         }
         _regex = nil;
-        _rangeOfFoundString = NSMakeRange(NSNotFound, 0);
         return NO;
     }
     
