@@ -78,6 +78,20 @@ This method calls `scrollRangeToVisible:` in iOS 6.x and below, and has a custom
 The other methods are pretty much self-explanatory. See the `#pragma mark - Misc` section for further info.
 
 
+#### iOS 7 Bugfixes
+
+Long story short, iOS 7 completely broke `UITextView`. `ICTextView` contains fixes for some very common issues:
+
+- **NSTextContainer bug:** `UITextView` initialized via `initWithFrame:` had an erratic behavior due to an uninitialized or wrong `NSTextContainer`
+- **Caret bug:** the caret didn't consider `contentInset` and often went out of the visible area
+- **characterRangeAtPoint: bug:** `characterRangeAtPoint:` always returned `nil`
+
+These fixes, combined with the custom methods to account for `contentInset`, should make working with `ICTextView` much more bearable
+than working with the standard `UITextView`.
+
+Bugfixes introduced by `ICTextView` will be removed (or isolated) as soon as they are fixed by Apple.
+
+
 #### License
 
 ICTextView is available under the MIT license. See the LICENSE file for more info.
