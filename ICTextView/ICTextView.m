@@ -39,10 +39,10 @@
 #endif
 
 // Document subview tag
-typedef enum
+enum
 {
     ICTagTextSubview = 181337
-} ICTag;
+};
 
 // Private iVars
 @interface ICTextView ()
