@@ -120,17 +120,23 @@
 
 #pragma mark - Configuration
 
+#pragma mark -- General --
+
+// Toggles highlights for search results (default = YES // NO = only scrolls)
+@property (nonatomic) BOOL highlightSearchResults;
+
+#pragma mark -- Appearance --
+
 // Color of the primary search highlight (default = RGB 150/200/255)
-@property (strong, nonatomic) UIColor *primaryHighlightColor;
+@property (nonatomic, strong) UIColor *primaryHighlightColor;
 
 // Color of the secondary search highlights (default = RGB 215/240/255)
-@property (strong, nonatomic) UIColor *secondaryHighlightColor;
+@property (nonatomic, strong) UIColor *secondaryHighlightColor;
 
 // Highlight corner radius (default = fontSize * 0.2)
 @property (nonatomic) CGFloat highlightCornerRadius;
 
-// Toggles highlights for search results (default = YES // NO = only scrolls)
-@property (nonatomic) BOOL highlightSearchResults;
+#pragma mark -- Performance --
 
 // Maximum number of cached highlighted matches (default = 100)
 // Note 1: setting this too high will impact memory usage
@@ -140,6 +146,8 @@
 // Delay for the auto-refresh while scrolling feature (default = 0.2 // min = 0.1 // off = 0.0)
 // Note: decreasing/disabling this may improve performance when self.text is very big
 @property (nonatomic) NSTimeInterval scrollAutoRefreshDelay;
+
+#pragma mark -- Output --
 
 // Range of string found during last search ({0, 0} on init and after resetSearch // {NSNotFound, 0} if not found)
 @property (nonatomic, readonly) NSRange rangeOfFoundString;

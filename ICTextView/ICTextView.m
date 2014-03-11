@@ -38,13 +38,21 @@
 #define NSFoundationVersionNumber_iOS_6_1 993.0
 #endif
 
+#pragma mark Constants
+
 // Document subview tag
 enum
 {
     ICTagTextSubview = 181337
 };
 
-// Private iVars
+#pragma mark - Globals
+
+// Search results highlighting supported starting from iOS 5.x
+static BOOL highlightingSupported;
+
+#pragma mark - Extension
+
 @interface ICTextView ()
 {
     // Highlights
@@ -65,8 +73,7 @@ enum
 }
 @end
 
-// Search results highlighting supported starting from iOS 5.x
-static BOOL _highlightingSupported;
+#pragma mark - Implementation
 
 @implementation ICTextView
 
@@ -85,7 +92,7 @@ static BOOL _highlightingSupported;
 + (void)initialize
 {
     if (self == [ICTextView class])
-        _highlightingSupported = [self conformsToProtocol:@protocol(UITextInput)];
+        highlightingSupported = [self conformsToProtocol:@protocol(UITextInput)];
 }
 
 #pragma mark - Private methods
@@ -256,7 +263,7 @@ static BOOL _highlightingSupported;
             
             // Eventually updates _scanIndex to match visible range
             if (_shouldUpdateScanIndex)
-                _scanIndex = visibleRange.location + (_regex ? visibleRange.length : 0);
+                _scanIndex = maskedRange.location + (_regex ? maskedRange.length : 0);
         }
         
         // Sets primary highlight
@@ -287,7 +294,7 @@ static BOOL _highlightingSupported;
         }
     }
     
-    // TODO: remove iOS 7 characterRangeAtPoint: bugfix when an official fix is available
+    // TODO: remove iOS 7 caret bugfix when an official fix is available
 #ifdef __IPHONE_7_0
     if (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_6_1)
     {
@@ -423,7 +430,7 @@ static BOOL _highlightingSupported;
 - (id)initWithCoder:(NSCoder *)aDecoder
 {
     self = [super initWithCoder:aDecoder];
-    if (self && _highlightingSupported)
+    if (self && highlightingSupported)
         [self initialize];
     return self;
 }
@@ -437,7 +444,7 @@ static BOOL _highlightingSupported;
 #endif
     {
         self = [super initWithFrame:frame];
-        if (self && _highlightingSupported)
+        if (self && highlightingSupported)
             [self initialize];
         return self;
     }
@@ -455,7 +462,7 @@ static BOOL _highlightingSupported;
     textContainer.heightTracksTextView = YES;
     [layoutManager addTextContainer:textContainer];
     self = [super initWithFrame:frame textContainer:textContainer];
-    if (self && _highlightingSupported)
+    if (self && highlightingSupported)
         [self initialize];
     return self;
 }
@@ -465,7 +472,7 @@ static BOOL _highlightingSupported;
 - (void)setContentOffset:(CGPoint)contentOffset
 {
     [super setContentOffset:contentOffset];
-    if (_highlightingSupported && _highlightSearchResults)
+    if (highlightingSupported && _highlightSearchResults)
     {
         // scrollView has scrolled
         _performedNewScroll = YES;
@@ -490,7 +497,7 @@ static BOOL _highlightingSupported;
 // Resets highlights on frame change
 - (void)setFrame:(CGRect)frame
 {
-    if (_highlightingSupported && _highlightsByRange.count)
+    if (highlightingSupported && _highlightsByRange.count)
         [self initializeHighlights];
     [super setFrame:frame];
 }
@@ -534,7 +541,7 @@ static BOOL _highlightingSupported;
 // Resets search, starts from top
 - (void)resetSearch
 {
-    if (_highlightingSupported)
+    if (highlightingSupported)
     {
         [self initializeHighlights];
         [_autoRefreshTimer invalidate];
@@ -596,7 +603,7 @@ static BOOL _highlightingSupported;
     _searchRange = range;
     
     // Creates regex
-    NSError *error;
+    NSError *__autoreleasing error = nil;
     _regex = [[NSRegularExpression alloc] initWithPattern:pattern options:options error:&error];
     if (error)
     {
@@ -608,7 +615,7 @@ static BOOL _highlightingSupported;
     }
     
     // Resets highlights
-    if (_highlightingSupported && _highlightSearchResults)
+    if (highlightingSupported && _highlightSearchResults)
     {
         [self initializePrimaryHighlights];
         if (!(samePattern && sameOptions && sameSearchRange))
@@ -651,7 +658,7 @@ static BOOL _highlightingSupported;
     _shouldUpdateScanIndex = NO;
     
     // Adds highlights
-    if (_highlightingSupported && _highlightSearchResults)
+    if (highlightingSupported && _highlightSearchResults)
         [self highlightOccurrencesInMaskedVisibleRange];
     
     // Scrolls
