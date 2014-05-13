@@ -44,6 +44,7 @@
     _textView = [[ICTextView alloc] initWithFrame:tempFrame];
     UIEdgeInsets tempInsets = UIEdgeInsetsMake(searchBarHeight, 0.0, keyboardHeight, 0.0);
     _textView.contentInset = tempInsets;
+    _textView.font = [UIFont systemFontOfSize:14.0];
     _textView.scrollIndicatorInsets = tempInsets;
     
     [mainView addSubview:_textView];
@@ -55,7 +56,11 @@
 {
     [super viewDidLoad];
 	_textView.text = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"ICTextView" ofType:@"h"] encoding:NSASCIIStringEncoding error:NULL];
-    _textView.font = [UIFont systemFontOfSize:14.0];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
     [_searchBar becomeFirstResponder];
 }
 
@@ -68,7 +73,7 @@
         [_textView resetSearch];
         return;
     }
-    [_textView scrollToString:searchText searchOptions:NSRegularExpressionCaseInsensitive];
+    [_textView scrollToString:searchText searchOptions:NSRegularExpressionCaseInsensitive animated:YES atScrollPosition:ICTextViewScrollPositionMiddle];
 }
 
 - (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar
@@ -78,7 +83,7 @@
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
-    [_textView scrollToString:searchBar.text searchOptions:NSRegularExpressionCaseInsensitive];
+    [_textView scrollToString:searchBar.text searchOptions:NSRegularExpressionCaseInsensitive animated:YES atScrollPosition:ICTextViewScrollPositionMiddle];
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
