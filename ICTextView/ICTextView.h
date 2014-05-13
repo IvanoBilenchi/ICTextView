@@ -31,7 +31,9 @@
 *
 * Compatibility:
 * --------------
-* ICTextView is compatible with iOS 4.x and above. Match highlighting is supported starting from iOS 5.x.
+* ICTextView is compatible with iOS 4.x and above.
+* It can be compiled with any iOS SDK starting from 5.x.
+* Match highlighting is supported starting from iOS 5.x.
 *
 * !!!WARNING!!! - contains ARC enabled code. Beware, MRC purists.
 *
@@ -90,7 +92,7 @@
 *
 * License:
 * --------
-* Copyright (c) 2013 Ivano Bilenchi
+* Copyright (c) 2013-2014 Ivano Bilenchi
 *
 * Permission is hereby granted, free of charge, to any person
 * obtaining a copy of this software and associated documentation
@@ -116,7 +118,20 @@
 
 #import <UIKit/UIKit.h>
 
+#pragma mark Constants
+
+typedef enum
+{
+    ICTextViewScrollPositionNone,       // Scrolls until the rect/range/text is visible with minimal movement
+    ICTextViewScrollPositionTop,        // Scrolls until the rect/range/text is on top of the text view
+    ICTextViewScrollPositionMiddle,     // Scrolls until the rect/range/text is in the middle of the text view
+    ICTextViewScrollPositionBottom      // Scrolls until the rect/range/text is at the bottom of the text view
+} ICTextViewScrollPosition;
+
+#pragma mark - Interface
+
 @interface ICTextView : UITextView
+
 
 #pragma mark - Configuration
 
@@ -153,8 +168,7 @@
 @property (nonatomic, readonly) NSRange rangeOfFoundString;
 
 
-
-#pragma mark - Methods
+#pragma mark - Usage
 
 #pragma mark -- Search --
 
@@ -168,19 +182,25 @@
 - (BOOL)scrollToMatch:(NSString *)pattern;
 - (BOOL)scrollToMatch:(NSString *)pattern searchOptions:(NSRegularExpressionOptions)options;
 - (BOOL)scrollToMatch:(NSString *)pattern searchOptions:(NSRegularExpressionOptions)options range:(NSRange)range;
+- (BOOL)scrollToMatch:(NSString *)pattern searchOptions:(NSRegularExpressionOptions)options animated:(BOOL)animated atScrollPosition:(ICTextViewScrollPosition)scrollPosition;
+- (BOOL)scrollToMatch:(NSString *)pattern searchOptions:(NSRegularExpressionOptions)options range:(NSRange)range animated:(BOOL)animated atScrollPosition:(ICTextViewScrollPosition)scrollPosition;
 
 // Scrolls to string (returns YES if found, NO otherwise)
 - (BOOL)scrollToString:(NSString *)stringToFind;
 - (BOOL)scrollToString:(NSString *)stringToFind searchOptions:(NSRegularExpressionOptions)options;
 - (BOOL)scrollToString:(NSString *)stringToFind searchOptions:(NSRegularExpressionOptions)options range:(NSRange)range;
+- (BOOL)scrollToString:(NSString *)stringToFind searchOptions:(NSRegularExpressionOptions)options animated:(BOOL)animated atScrollPosition:(ICTextViewScrollPosition)scrollPosition;
+- (BOOL)scrollToString:(NSString *)stringToFind searchOptions:(NSRegularExpressionOptions)options range:(NSRange)range animated:(BOOL)animated atScrollPosition:(ICTextViewScrollPosition)scrollPosition;
 
 #pragma mark -- Misc --
 
 // Scrolls to visible range, eventually considering insets
 - (void)scrollRangeToVisible:(NSRange)range consideringInsets:(BOOL)considerInsets;
+- (void)scrollRangeToVisible:(NSRange)range consideringInsets:(BOOL)considerInsets animated:(BOOL)animated atScrollPosition:(ICTextViewScrollPosition)scrollPosition;
 
 // Scrolls to visible rect, eventually considering insets
 - (void)scrollRectToVisible:(CGRect)rect animated:(BOOL)animated consideringInsets:(BOOL)considerInsets;
+- (void)scrollRectToVisible:(CGRect)rect animated:(BOOL)animated consideringInsets:(BOOL)considerInsets atScrollPosition:(ICTextViewScrollPosition)scrollPosition;
 
 // Returns visible range, with start and end position, eventually considering insets
 - (NSRange)visibleRangeConsideringInsets:(BOOL)considerInsets;

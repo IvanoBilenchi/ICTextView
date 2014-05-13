@@ -2,7 +2,7 @@
 * ICTextView.m - 1.0.2
 * --------------------
 *
-* Copyright (c) 2013 Ivano Bilenchi
+* Copyright (c) 2013-2014 Ivano Bilenchi
 *
 * Permission is hereby granted, free of charge, to any person
 * obtaining a copy of this software and associated documentation
@@ -30,12 +30,17 @@
 #import <QuartzCore/QuartzCore.h>
 
 // For old SDKs
+
+#ifndef NSFoundationVersionNumber_iOS_5_0
+#define NSFoundationVersionNumber_iOS_5_0 881.00
+#endif
+
 #ifndef NSFoundationVersionNumber_iOS_6_0
-#define NSFoundationVersionNumber_iOS_6_0 993.0
+#define NSFoundationVersionNumber_iOS_6_0 993.00
 #endif
 
 #ifndef NSFoundationVersionNumber_iOS_6_1
-#define NSFoundationVersionNumber_iOS_6_1 993.0
+#define NSFoundationVersionNumber_iOS_6_1 993.00
 #endif
 
 // Debug logging
@@ -368,6 +373,32 @@ static BOOL highlightingSupported;
     _performedNewScroll = NO;
 }
 
+// Scrolls to y coordinate without breaking the frame and (eventually) insets
+- (void)scrollToY:(CGFloat)y animated:(BOOL)animated consideringInsets:(BOOL)considerInsets
+{
+    CGFloat min = 0.0;
+    CGFloat max = self.contentSize.height - self.bounds.size.height;
+    
+    if (considerInsets)
+    {
+        UIEdgeInsets contentInset = self.contentInset;
+        min -= contentInset.top;
+        max += contentInset.bottom;
+    }
+    
+    // Calculates new content offset
+    CGPoint contentOffset = self.contentOffset;
+    
+    if (y > max)
+        contentOffset.y = max;
+    else if (y < min)
+        contentOffset.y = min;
+    else
+        contentOffset.y = y;
+    
+    [self setContentOffset:contentOffset animated:animated];
+}
+
 - (void)setPrimaryHighlightAtRange:(NSRange)range
 {
     [self initializePrimaryHighlights];
@@ -544,15 +575,25 @@ static BOOL highlightingSupported;
 
 - (BOOL)scrollToMatch:(NSString *)pattern
 {
-    return [self scrollToMatch:pattern searchOptions:0 range:NSMakeRange(0, self.text.length)];
+    return [self scrollToMatch:pattern searchOptions:0 range:NSMakeRange(0, self.text.length) animated:YES atScrollPosition:ICTextViewScrollPositionNone];
 }
 
 - (BOOL)scrollToMatch:(NSString *)pattern searchOptions:(NSRegularExpressionOptions)options
 {
-    return [self scrollToMatch:pattern searchOptions:options range:NSMakeRange(0, self.text.length)];
+    return [self scrollToMatch:pattern searchOptions:options range:NSMakeRange(0, self.text.length) animated:YES atScrollPosition:ICTextViewScrollPositionNone];
 }
 
 - (BOOL)scrollToMatch:(NSString *)pattern searchOptions:(NSRegularExpressionOptions)options range:(NSRange)range
+{
+    return [self scrollToMatch:pattern searchOptions:options range:range animated:YES atScrollPosition:ICTextViewScrollPositionNone];
+}
+
+- (BOOL)scrollToMatch:(NSString *)pattern searchOptions:(NSRegularExpressionOptions)options animated:(BOOL)animated atScrollPosition:(ICTextViewScrollPosition)scrollPosition
+{
+    return [self scrollToMatch:pattern searchOptions:options range:NSMakeRange(0, self.text.length) animated:animated atScrollPosition:scrollPosition];
+}
+
+- (BOOL)scrollToMatch:(NSString *)pattern searchOptions:(NSRegularExpressionOptions)options range:(NSRange)range animated:(BOOL)animated atScrollPosition:(ICTextViewScrollPosition)scrollPosition
 {
     // Calculate valid range
     range = NSIntersectionRange(NSMakeRange(0, self.text.length), range);
@@ -623,7 +664,7 @@ static BOOL highlightingSupported;
         {
             // Start from top
             _scanIndex = range.location;
-            return [self scrollToMatch:pattern searchOptions:options range:range];
+            return [self scrollToMatch:pattern searchOptions:options range:range animated:animated atScrollPosition:scrollPosition];
         }
         _regex = nil;
         return NO;
@@ -639,7 +680,7 @@ static BOOL highlightingSupported;
         [self highlightOccurrencesInMaskedVisibleRange];
     
     // Scroll
-    [self scrollRangeToVisible:matchRange consideringInsets:YES];
+    [self scrollRangeToVisible:matchRange consideringInsets:YES animated:animated atScrollPosition:scrollPosition];
     
     return YES;
 }
@@ -648,15 +689,25 @@ static BOOL highlightingSupported;
 
 - (BOOL)scrollToString:(NSString *)stringToFind
 {
-    return [self scrollToString:stringToFind searchOptions:0 range:NSMakeRange(0, self.text.length)];
+    return [self scrollToString:stringToFind searchOptions:0 range:NSMakeRange(0, self.text.length) animated:YES atScrollPosition:ICTextViewScrollPositionNone];
 }
 
 - (BOOL)scrollToString:(NSString *)stringToFind searchOptions:(NSRegularExpressionOptions)options
 {
-    return [self scrollToString:stringToFind searchOptions:options range:NSMakeRange(0, self.text.length)];
+    return [self scrollToString:stringToFind searchOptions:options range:NSMakeRange(0, self.text.length) animated:YES atScrollPosition:ICTextViewScrollPositionNone];
 }
 
 - (BOOL)scrollToString:(NSString *)stringToFind searchOptions:(NSRegularExpressionOptions)options range:(NSRange)range
+{
+    return [self scrollToString:stringToFind searchOptions:options range:range animated:YES atScrollPosition:ICTextViewScrollPositionNone];
+}
+
+- (BOOL)scrollToString:(NSString *)stringToFind searchOptions:(NSRegularExpressionOptions)options animated:(BOOL)animated atScrollPosition:(ICTextViewScrollPosition)scrollPosition
+{
+    return [self scrollToString:stringToFind searchOptions:options range:NSMakeRange(0, self.text.length) animated:animated atScrollPosition:scrollPosition];
+}
+
+- (BOOL)scrollToString:(NSString *)stringToFind searchOptions:(NSRegularExpressionOptions)options range:(NSRange)range animated:(BOOL)animated atScrollPosition:(ICTextViewScrollPosition)scrollPosition
 {
     if (!stringToFind)
     {
@@ -678,57 +729,84 @@ static BOOL highlightingSupported;
     }
     
     // Perform search
-    return [self scrollToMatch:stringToFind searchOptions:options range:range];
+    return [self scrollToMatch:stringToFind searchOptions:options range:range animated:animated atScrollPosition:scrollPosition];
 }
 
 #pragma mark -- Misc --
 
 - (void)scrollRangeToVisible:(NSRange)range consideringInsets:(BOOL)considerInsets
 {
-#ifdef __IPHONE_7_0
-    if (considerInsets && (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_6_1))
+    [self scrollRangeToVisible:range consideringInsets:considerInsets animated:YES atScrollPosition:ICTextViewScrollPositionNone];
+}
+
+- (void)scrollRangeToVisible:(NSRange)range consideringInsets:(BOOL)considerInsets animated:(BOOL)animated atScrollPosition:(ICTextViewScrollPosition)scrollPosition
+{
+    if (NSFoundationVersionNumber < NSFoundationVersionNumber_iOS_5_0)
     {
-        // Calculate rect for range
-        UITextPosition *startPosition = [self positionFromPosition:self.beginningOfDocument offset:range.location];
-        UITextPosition *endPosition = [self positionFromPosition:startPosition offset:range.length];
-        UITextRange *textRange = [self textRangeFromPosition:startPosition toPosition:endPosition];
-        CGRect rect = [self firstRectForRange:textRange];
-        
-        // Scroll to visible rect
-        [self scrollRectToVisible:rect animated:YES consideringInsets:YES];
+        // considerInsets, animated and scrollPosition are ignored in iOS 4.x
+        // as UITextView doesn't conform to the UITextInput protocol
+        [self scrollRangeToVisible:range];
+        return;
     }
-    else
-#endif
-        [super scrollRangeToVisible:range];
+    
+    // Calculate rect for range
+    UITextPosition *startPosition = [self positionFromPosition:self.beginningOfDocument offset:range.location];
+    UITextPosition *endPosition = [self positionFromPosition:startPosition offset:range.length];
+    UITextRange *textRange = [self textRangeFromPosition:startPosition toPosition:endPosition];
+    CGRect rect = [self firstRectForRange:textRange];
+    
+    // Scroll to visible rect
+    [self scrollRectToVisible:rect animated:animated consideringInsets:considerInsets atScrollPosition:scrollPosition];
 }
 
 - (void)scrollRectToVisible:(CGRect)rect animated:(BOOL)animated consideringInsets:(BOOL)considerInsets
 {
-#ifdef __IPHONE_7_0
-    if (considerInsets && (NSFoundationVersionNumber > NSFoundationVersionNumber_iOS_6_1))
+    [self scrollRectToVisible:rect animated:animated consideringInsets:considerInsets atScrollPosition:ICTextViewScrollPositionNone];
+}
+
+- (void)scrollRectToVisible:(CGRect)rect animated:(BOOL)animated consideringInsets:(BOOL)considerInsets atScrollPosition:(ICTextViewScrollPosition)scrollPosition
+{
+    CGRect visibleRect = [self visibleRectConsideringInsets:considerInsets];
+    UIEdgeInsets contentInset;
+    
+    if (considerInsets)
+        contentInset = self.contentInset;
+    else
+        contentInset = UIEdgeInsetsZero;
+    
+    // Calculates new contentOffset
+    CGPoint contentOffset = self.contentOffset;
+    
+    switch (scrollPosition)
     {
-        // Get bounds and calculate visible rect
-        CGRect bounds = self.bounds;
-        UIEdgeInsets contentInset = self.contentInset;
-        CGRect visibleRect = [self visibleRectConsideringInsets:YES];
-        
-        // Do not scroll if rect is on screen
-        if (!CGRectContainsRect(visibleRect, rect))
-        {
-            CGPoint contentOffset = self.contentOffset;
-            // Calculates new contentOffset
+        case ICTextViewScrollPositionTop:
+            contentOffset.y = rect.origin.y - contentInset.top;
+            break;
+            
+        case ICTextViewScrollPositionMiddle:
+            contentOffset.y = rect.origin.y - (visibleRect.size.height + contentInset.top + rect.size.height) * 0.5;
+            break;
+            
+        case ICTextViewScrollPositionBottom:
+            contentOffset.y = rect.origin.y - (visibleRect.size.height + contentInset.top) + rect.size.height;
+            break;
+            
+        case ICTextViewScrollPositionNone:
+        default:
+            // Rect is already visible, do not scroll
+            if (CGRectContainsRect(visibleRect, rect))
+                return;
+            
             if (rect.origin.y < visibleRect.origin.y)
                 // rect precedes bounds, scroll up
                 contentOffset.y = rect.origin.y - contentInset.top;
             else
                 // rect follows bounds, scroll down
-                contentOffset.y = rect.origin.y + contentInset.bottom + rect.size.height - bounds.size.height;
-            [self setContentOffset:contentOffset animated:animated];
-        }
+                contentOffset.y = rect.origin.y - (visibleRect.size.height + contentInset.top) + rect.size.height;
+            break;
     }
-    else
-#endif
-        [super scrollRectToVisible:rect animated:animated];
+    
+    [self scrollToY:contentOffset.y animated:animated consideringInsets:considerInsets];
 }
 
 - (NSRange)visibleRangeConsideringInsets:(BOOL)considerInsets
