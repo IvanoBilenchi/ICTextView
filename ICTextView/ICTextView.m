@@ -1,5 +1,5 @@
 /**
-* ICTextView.m - 1.0.2
+* ICTextView.m - 1.1.0
 * --------------------
 *
 * Copyright (c) 2013-2014 Ivano Bilenchi
