@@ -719,7 +719,7 @@ static BOOL highlightingSupported;
     // Escape metacharacters
     stringToFind = [NSRegularExpression escapedPatternForString:stringToFind];
     
-    // These checks allow better automatic search on UITextField or UISearchBar text change
+    // Better automatic search on UITextField or UISearchBar text change
     if (_regex)
     {
         NSString *lcStringToFind = [stringToFind lowercaseString];
@@ -766,29 +766,21 @@ static BOOL highlightingSupported;
 
 - (void)scrollRectToVisible:(CGRect)rect animated:(BOOL)animated consideringInsets:(BOOL)considerInsets atScrollPosition:(ICTextViewScrollPosition)scrollPosition
 {
+    UIEdgeInsets contentInset = considerInsets ? self.contentInset : UIEdgeInsetsZero;
     CGRect visibleRect = [self visibleRectConsideringInsets:considerInsets];
-    UIEdgeInsets contentInset;
-    
-    if (considerInsets)
-        contentInset = self.contentInset;
-    else
-        contentInset = UIEdgeInsetsZero;
-    
-    // Calculates new contentOffset
-    CGPoint contentOffset = self.contentOffset;
+    CGFloat y = rect.origin.y - contentInset.top;
     
     switch (scrollPosition)
     {
         case ICTextViewScrollPositionTop:
-            contentOffset.y = rect.origin.y - contentInset.top;
             break;
             
         case ICTextViewScrollPositionMiddle:
-            contentOffset.y = rect.origin.y - (visibleRect.size.height + contentInset.top + rect.size.height) * 0.5;
+            y += (rect.size.height - visibleRect.size.height) * 0.5;
             break;
             
         case ICTextViewScrollPositionBottom:
-            contentOffset.y = rect.origin.y - (visibleRect.size.height + contentInset.top) + rect.size.height;
+            y += rect.size.height - visibleRect.size.height;
             break;
             
         case ICTextViewScrollPositionNone:
@@ -797,16 +789,13 @@ static BOOL highlightingSupported;
             if (CGRectContainsRect(visibleRect, rect))
                 return;
             
-            if (rect.origin.y < visibleRect.origin.y)
-                // rect precedes bounds, scroll up
-                contentOffset.y = rect.origin.y - contentInset.top;
-            else
-                // rect follows bounds, scroll down
-                contentOffset.y = rect.origin.y - (visibleRect.size.height + contentInset.top) + rect.size.height;
+            // Scroll down
+            if (rect.origin.y >= visibleRect.origin.y)
+                y += rect.size.height - visibleRect.size.height;
             break;
     }
     
-    [self scrollToY:contentOffset.y animated:animated consideringInsets:considerInsets];
+    [self scrollToY:y animated:animated consideringInsets:considerInsets];
 }
 
 - (NSRange)visibleRangeConsideringInsets:(BOOL)considerInsets
