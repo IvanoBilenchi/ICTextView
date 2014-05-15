@@ -30,7 +30,6 @@
 #import <QuartzCore/QuartzCore.h>
 
 // For old SDKs
-
 #ifndef NSFoundationVersionNumber_iOS_5_0
 #define NSFoundationVersionNumber_iOS_5_0 881.00
 #endif
@@ -768,34 +767,36 @@ static BOOL highlightingSupported;
 {
     UIEdgeInsets contentInset = considerInsets ? self.contentInset : UIEdgeInsetsZero;
     CGRect visibleRect = [self visibleRectConsideringInsets:considerInsets];
+    CGRect toleranceArea = visibleRect;
     CGFloat y = rect.origin.y - contentInset.top;
     
     switch (scrollPosition)
     {
         case ICTextViewScrollPositionTop:
+            toleranceArea.size.height = rect.size.height * 1.5;
             break;
             
         case ICTextViewScrollPositionMiddle:
-            y += (rect.size.height - visibleRect.size.height) * 0.5;
+            toleranceArea.size.height = rect.size.height * 1.5;
+            toleranceArea.origin.y += ((visibleRect.size.height - toleranceArea.size.height) * 0.5);
+            y -= ((visibleRect.size.height - rect.size.height) * 0.5);
             break;
             
         case ICTextViewScrollPositionBottom:
-            y += rect.size.height - visibleRect.size.height;
+            toleranceArea.size.height = rect.size.height * 1.5;
+            toleranceArea.origin.y += (visibleRect.size.height - toleranceArea.size.height);
+            y -= (visibleRect.size.height - rect.size.height);
             break;
             
         case ICTextViewScrollPositionNone:
         default:
-            // Rect is already visible, do not scroll
-            if (CGRectContainsRect(visibleRect, rect))
-                return;
-            
-            // Scroll down
             if (rect.origin.y >= visibleRect.origin.y)
-                y += rect.size.height - visibleRect.size.height;
+                y -= (visibleRect.size.height - rect.size.height);
             break;
     }
     
-    [self scrollToY:y animated:animated consideringInsets:considerInsets];
+    if (!CGRectContainsRect(toleranceArea, rect))
+        [self scrollToY:y animated:animated consideringInsets:considerInsets];
 }
 
 - (NSRange)visibleRangeConsideringInsets:(BOOL)considerInsets
