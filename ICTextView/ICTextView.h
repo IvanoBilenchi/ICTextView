@@ -169,6 +169,8 @@ typedef enum
 // Range of string found during last search ({0, 0} on init and after resetSearch // {NSNotFound, 0} if not found)
 @property (nonatomic, readonly) NSRange rangeOfFoundString;
 
+// The total number of the matching text
+@property (nonatomic, assign) NSUInteger matchingCount;
 
 #pragma mark - Usage
 
