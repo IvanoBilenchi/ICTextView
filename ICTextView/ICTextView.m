@@ -568,6 +568,7 @@ static BOOL highlightingSupported;
     _regex = nil;
     _scanIndex = 0;
     _searchRange = NSMakeRange(0,0);
+    _matchingCount = 0;
 }
 
 #pragma mark ---- Regex search ----
@@ -624,6 +625,7 @@ static BOOL highlightingSupported;
     
     NSError *__autoreleasing error = nil;
     _regex = [[NSRegularExpression alloc] initWithPattern:pattern options:options error:&error];
+    _matchingCount = [_regex numberOfMatchesInString:self.text options:NSMatchingReportCompletion range:range];
     if (error)
     {
         ICTextViewLog(@"Error while creating regex: %@", error);
