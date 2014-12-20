@@ -7,31 +7,45 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3A09E8ED1997A0C900328A1D /* ICTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A09E8EC1997A0C900328A1D /* ICTextView.m */; };
+		3A3C8F6A199FE20200EA3080 /* ICRegularExpression.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A3C8F69199FE20200EA3080 /* ICRegularExpression.m */; };
+		3A3C8F6E19A150B200EA3080 /* ICRangeUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 3A3C8F6D19A150B200EA3080 /* ICRangeUtils.m */; };
 		3AE5DAAF1828FE9600E8EB28 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AE5DAAE1828FE9600E8EB28 /* Foundation.framework */; };
 		3AE5DAB11828FE9600E8EB28 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AE5DAB01828FE9600E8EB28 /* CoreGraphics.framework */; };
 		3AE5DAB31828FE9600E8EB28 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3AE5DAB21828FE9600E8EB28 /* UIKit.framework */; };
-		3AE5DAF81829073100E8EB28 /* ICAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE5DAF11829073100E8EB28 /* ICAppDelegate.m */; };
-		3AE5DAFA1829073100E8EB28 /* ICViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE5DAF51829073100E8EB28 /* ICViewController.m */; };
-		3AE5DAFC1829073100E8EB28 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE5DAF71829073100E8EB28 /* main.m */; };
-		3AE5DAFF1829081F00E8EB28 /* ICTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3AE5DAFE1829081F00E8EB28 /* ICTextView.m */; };
-		3AE5DB0018290A4700E8EB28 /* ICTextView.h in Resources */ = {isa = PBXBuildFile; fileRef = 3AE5DAFD1829081F00E8EB28 /* ICTextView.h */; };
+		CC1005041A34D2CD00DB00DD /* ICAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CC1004FC1A34D2CD00DB00DD /* ICAppDelegate.m */; };
+		CC1005051A34D2CD00DB00DD /* ICViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CC1004FE1A34D2CD00DB00DD /* ICViewController.m */; };
+		CC1005061A34D2CD00DB00DD /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CC1004FF1A34D2CD00DB00DD /* main.m */; };
+		CC542B411A3719DA0094E5D1 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CC542B3E1A3719DA0094E5D1 /* Default-568h@2x.png */; };
+		CC542B421A3719DA0094E5D1 /* Default-667h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = CC542B3F1A3719DA0094E5D1 /* Default-667h@2x.png */; };
+		CC542B431A3719DA0094E5D1 /* Default-736h@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = CC542B401A3719DA0094E5D1 /* Default-736h@3x.png */; };
+		CCC580601A307FD100EADAAB /* ICTextView.h in Resources */ = {isa = PBXBuildFile; fileRef = 3A09E8EB1997A0C900328A1D /* ICTextView.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3A09E8EB1997A0C900328A1D /* ICTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ICTextView.h; sourceTree = "<group>"; };
+		3A09E8EC1997A0C900328A1D /* ICTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ICTextView.m; sourceTree = "<group>"; };
+		3A3C8F68199FE20200EA3080 /* ICRegularExpression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ICRegularExpression.h; sourceTree = "<group>"; };
+		3A3C8F69199FE20200EA3080 /* ICRegularExpression.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ICRegularExpression.m; sourceTree = "<group>"; };
+		3A3C8F6B199FE64C00EA3080 /* ICPreprocessor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ICPreprocessor.h; sourceTree = "<group>"; };
+		3A3C8F6C19A150B200EA3080 /* ICRangeUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ICRangeUtils.h; sourceTree = "<group>"; };
+		3A3C8F6D19A150B200EA3080 /* ICRangeUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ICRangeUtils.m; sourceTree = "<group>"; };
 		3AE5DAAB1828FE9600E8EB28 /* ICTextViewExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ICTextViewExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3AE5DAAE1828FE9600E8EB28 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		3AE5DAB01828FE9600E8EB28 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		3AE5DAB21828FE9600E8EB28 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		3AE5DAC71828FE9600E8EB28 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
-		3AE5DAF01829073100E8EB28 /* ICAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ICAppDelegate.h; sourceTree = "<group>"; };
-		3AE5DAF11829073100E8EB28 /* ICAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ICAppDelegate.m; sourceTree = "<group>"; };
-		3AE5DAF21829073100E8EB28 /* ICTextViewExample-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "ICTextViewExample-Info.plist"; sourceTree = "<group>"; };
-		3AE5DAF31829073100E8EB28 /* ICTextViewExample-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ICTextViewExample-Prefix.pch"; sourceTree = "<group>"; };
-		3AE5DAF41829073100E8EB28 /* ICViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ICViewController.h; sourceTree = "<group>"; };
-		3AE5DAF51829073100E8EB28 /* ICViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ICViewController.m; sourceTree = "<group>"; };
-		3AE5DAF71829073100E8EB28 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		3AE5DAFD1829081F00E8EB28 /* ICTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ICTextView.h; path = ICTextView/ICTextView.h; sourceTree = SOURCE_ROOT; };
-		3AE5DAFE1829081F00E8EB28 /* ICTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ICTextView.m; path = ICTextView/ICTextView.m; sourceTree = SOURCE_ROOT; };
+		CC1004FB1A34D2CD00DB00DD /* ICAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ICAppDelegate.h; sourceTree = "<group>"; };
+		CC1004FC1A34D2CD00DB00DD /* ICAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ICAppDelegate.m; sourceTree = "<group>"; };
+		CC1004FD1A34D2CD00DB00DD /* ICViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ICViewController.h; sourceTree = "<group>"; };
+		CC1004FE1A34D2CD00DB00DD /* ICViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ICViewController.m; sourceTree = "<group>"; };
+		CC1004FF1A34D2CD00DB00DD /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		CC1005011A34D2CD00DB00DD /* ICTextViewExample-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ICTextViewExample-Prefix.pch"; sourceTree = "<group>"; };
+		CC1005031A34D2CD00DB00DD /* ICTextViewExample-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "ICTextViewExample-Info.plist"; sourceTree = "<group>"; };
+		CC1005081A34D36200DB00DD /* Compatibility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Compatibility.h; sourceTree = "<group>"; };
+		CC542B3E1A3719DA0094E5D1 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		CC542B3F1A3719DA0094E5D1 /* Default-667h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-667h@2x.png"; sourceTree = "<group>"; };
+		CC542B401A3719DA0094E5D1 /* Default-736h@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-736h@3x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,9 +62,24 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3A09E8EA1997A0C900328A1D /* ICTextView */ = {
+			isa = PBXGroup;
+			children = (
+				3A3C8F6B199FE64C00EA3080 /* ICPreprocessor.h */,
+				3A3C8F6C19A150B200EA3080 /* ICRangeUtils.h */,
+				3A3C8F6D19A150B200EA3080 /* ICRangeUtils.m */,
+				3A3C8F68199FE20200EA3080 /* ICRegularExpression.h */,
+				3A3C8F69199FE20200EA3080 /* ICRegularExpression.m */,
+				3A09E8EB1997A0C900328A1D /* ICTextView.h */,
+				3A09E8EC1997A0C900328A1D /* ICTextView.m */,
+			);
+			path = ICTextView;
+			sourceTree = "<group>";
+		};
 		3AE5DAA21828FE9600E8EB28 = {
 			isa = PBXGroup;
 			children = (
+				3A09E8EA1997A0C900328A1D /* ICTextView */,
 				3AE5DAB41828FE9600E8EB28 /* ICTextViewExample */,
 				3AE5DAAD1828FE9600E8EB28 /* Frameworks */,
 				3AE5DAAC1828FE9600E8EB28 /* Products */,
@@ -79,25 +108,43 @@
 		3AE5DAB41828FE9600E8EB28 /* ICTextViewExample */ = {
 			isa = PBXGroup;
 			children = (
-				3AE5DAF01829073100E8EB28 /* ICAppDelegate.h */,
-				3AE5DAF11829073100E8EB28 /* ICAppDelegate.m */,
-				3AE5DAF41829073100E8EB28 /* ICViewController.h */,
-				3AE5DAF51829073100E8EB28 /* ICViewController.m */,
-				3AE5DAFD1829081F00E8EB28 /* ICTextView.h */,
-				3AE5DAFE1829081F00E8EB28 /* ICTextView.m */,
-				3AE5DAB51828FE9600E8EB28 /* Supporting Files */,
+				CC1005021A34D2CD00DB00DD /* Resources */,
+				CC1005001A34D2CD00DB00DD /* Preprocessor */,
+				CC1004FA1A34D2CD00DB00DD /* Controller */,
+				CC1004FF1A34D2CD00DB00DD /* main.m */,
 			);
 			path = ICTextViewExample;
 			sourceTree = "<group>";
 		};
-		3AE5DAB51828FE9600E8EB28 /* Supporting Files */ = {
+		CC1004FA1A34D2CD00DB00DD /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				3AE5DAF21829073100E8EB28 /* ICTextViewExample-Info.plist */,
-				3AE5DAF71829073100E8EB28 /* main.m */,
-				3AE5DAF31829073100E8EB28 /* ICTextViewExample-Prefix.pch */,
+				CC1004FB1A34D2CD00DB00DD /* ICAppDelegate.h */,
+				CC1004FC1A34D2CD00DB00DD /* ICAppDelegate.m */,
+				CC1004FD1A34D2CD00DB00DD /* ICViewController.h */,
+				CC1004FE1A34D2CD00DB00DD /* ICViewController.m */,
 			);
-			name = "Supporting Files";
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		CC1005001A34D2CD00DB00DD /* Preprocessor */ = {
+			isa = PBXGroup;
+			children = (
+				CC1005081A34D36200DB00DD /* Compatibility.h */,
+				CC1005011A34D2CD00DB00DD /* ICTextViewExample-Prefix.pch */,
+			);
+			path = Preprocessor;
+			sourceTree = "<group>";
+		};
+		CC1005021A34D2CD00DB00DD /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				CC542B3E1A3719DA0094E5D1 /* Default-568h@2x.png */,
+				CC542B3F1A3719DA0094E5D1 /* Default-667h@2x.png */,
+				CC542B401A3719DA0094E5D1 /* Default-736h@3x.png */,
+				CC1005031A34D2CD00DB00DD /* ICTextViewExample-Info.plist */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -152,7 +199,10 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3AE5DB0018290A4700E8EB28 /* ICTextView.h in Resources */,
+				CCC580601A307FD100EADAAB /* ICTextView.h in Resources */,
+				CC542B421A3719DA0094E5D1 /* Default-667h@2x.png in Resources */,
+				CC542B411A3719DA0094E5D1 /* Default-568h@2x.png in Resources */,
+				CC542B431A3719DA0094E5D1 /* Default-736h@3x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -163,10 +213,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3AE5DAFA1829073100E8EB28 /* ICViewController.m in Sources */,
-				3AE5DAFC1829073100E8EB28 /* main.m in Sources */,
-				3AE5DAF81829073100E8EB28 /* ICAppDelegate.m in Sources */,
-				3AE5DAFF1829081F00E8EB28 /* ICTextView.m in Sources */,
+				3A3C8F6A199FE20200EA3080 /* ICRegularExpression.m in Sources */,
+				3A3C8F6E19A150B200EA3080 /* ICRangeUtils.m in Sources */,
+				3A09E8ED1997A0C900328A1D /* ICTextView.m in Sources */,
+				CC1005041A34D2CD00DB00DD /* ICAppDelegate.m in Sources */,
+				CC1005051A34D2CD00DB00DD /* ICViewController.m in Sources */,
+				CC1005061A34D2CD00DB00DD /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -177,7 +229,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				ARCHS = armv7;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -206,7 +258,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 			};
@@ -216,7 +268,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				ARCHS = armv7;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -239,7 +291,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -251,9 +303,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "ICTextViewExample/ICTextViewExample-Prefix.pch";
-				INFOPLIST_FILE = "ICTextViewExample/ICTextViewExample-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				GCC_PREFIX_HEADER = "ICTextViewExample/Preprocessor/ICTextViewExample-Prefix.pch";
+				INFOPLIST_FILE = "ICTextViewExample/Resources/ICTextViewExample-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -265,9 +317,9 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "ICTextViewExample/ICTextViewExample-Prefix.pch";
-				INFOPLIST_FILE = "ICTextViewExample/ICTextViewExample-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				GCC_PREFIX_HEADER = "ICTextViewExample/Preprocessor/ICTextViewExample-Prefix.pch";
+				INFOPLIST_FILE = "ICTextViewExample/Resources/ICTextViewExample-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};

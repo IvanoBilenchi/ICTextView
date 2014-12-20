@@ -5,7 +5,7 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>06662FD4-DF57-40A2-BA5D-268978FEC135</string>
+	<string>47125732-C55B-4398-839E-E0FACB646566</string>
 	<key>IDESourceControlProjectName</key>
 	<string>ICTextViewExample</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
@@ -14,11 +14,11 @@
 		<string>https://github.com/Exile90/ICTextView.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>ICTextViewExample/ICTextViewExample.xcodeproj/project.xcworkspace</string>
+	<string>ICTextViewExample.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>F0577D67-A8B9-42FA-B2F9-6AE1656B61A5</key>
-		<string>../../..</string>
+		<string>../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/Exile90/ICTextView.git</string>

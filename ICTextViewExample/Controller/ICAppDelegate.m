@@ -9,16 +9,22 @@
 #import "ICAppDelegate.h"
 #import "ICViewController.h"
 
+@interface ICAppDelegate ()
+{
+    UIWindow *_mainWindow;
+}
+@end
+
 @implementation ICAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    // Override point for customization after application launch.
+    _mainWindow = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     ICViewController *rootController = [[ICViewController alloc] init];
-    self.window.rootViewController = rootController;
-    self.window.backgroundColor = [UIColor whiteColor];
-    [self.window makeKeyAndVisible];
+    _mainWindow.rootViewController = rootController;
+    _mainWindow.backgroundColor = [UIColor whiteColor];
+    [_mainWindow makeKeyAndVisible];
+    [[UIApplication sharedApplication] setStatusBarHidden:YES];
     return YES;
 }
 
