@@ -791,18 +791,17 @@ static BOOL shouldApplyTextContainerFix;
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
 - (id)initWithFrame:(CGRect)frame textContainer:(NSTextContainer *)textContainer
 {
-    // Don't move this into the 'if(!textContainer)' scope, or it will be deallocated before [super initWithFrame:textContainer:] is called
-    NSTextStorage *textStorage = nil;
+    NSTextContainer *localTextContainer = textContainer;
     
-    if (!textContainer && shouldApplyTextContainerFix)
+    if (!localTextContainer && shouldApplyTextContainerFix)
     {
-        textStorage = [[NSTextStorage alloc] init];
+        NSTextStorage *textStorage = [[NSTextStorage alloc] init];
         NSLayoutManager *layoutManager = [[NSLayoutManager alloc] init];
         [textStorage addLayoutManager:layoutManager];
-        textContainer = [[NSTextContainer alloc] initWithSize:frame.size];
-        textContainer.heightTracksTextView = YES;
-        textContainer.widthTracksTextView = YES;
-        [layoutManager addTextContainer:textContainer];
+        localTextContainer = [[NSTextContainer alloc] initWithSize:frame.size];
+        localTextContainer.heightTracksTextView = YES;
+        localTextContainer.widthTracksTextView = YES;
+        [layoutManager addTextContainer:localTextContainer];
     }
     
     if ((self = [super initWithFrame:frame textContainer:textContainer]) && highlightingSupported)
