@@ -896,4 +896,78 @@ static BOOL shouldApplyTextContainerFix;
 }
 #endif
 
+#pragma mark - Deprecated
+
+- (BOOL)scrollToMatch:(NSString *)pattern searchOptions:(NSRegularExpressionOptions)options
+{
+    self.searchOptions = options;
+    return [self scrollToMatch:pattern];
+}
+
+- (BOOL)scrollToMatch:(NSString *)pattern searchOptions:(NSRegularExpressionOptions)options range:(NSRange)range
+{
+    self.searchOptions = options;
+    self.searchRange = range;
+    return [self scrollToMatch:pattern];
+}
+
+- (BOOL)scrollToMatch:(NSString *)pattern searchOptions:(NSRegularExpressionOptions)options animated:(BOOL)animated atScrollPosition:(ICTextViewScrollPosition)scrollPosition
+{
+    self.animatedSearch = animated;
+    self.scrollPosition = scrollPosition;
+    self.searchOptions = options;
+    return [self scrollToMatch:pattern];
+}
+
+- (BOOL)scrollToMatch:(NSString *)pattern searchOptions:(NSRegularExpressionOptions)options range:(NSRange)range animated:(BOOL)animated atScrollPosition:(ICTextViewScrollPosition)scrollPosition
+{
+    self.animatedSearch = animated;
+    self.scrollPosition = scrollPosition;
+    self.searchOptions = options;
+    self.searchRange = range;
+    return [self scrollToMatch:pattern];
+}
+
+- (BOOL)scrollToString:(NSString *)stringToFind searchOptions:(NSRegularExpressionOptions)options
+{
+    self.searchOptions = options;
+    return [self scrollToString:stringToFind];
+}
+
+- (BOOL)scrollToString:(NSString *)stringToFind searchOptions:(NSRegularExpressionOptions)options range:(NSRange)range
+{
+    self.searchOptions = options;
+    self.searchRange = range;
+    return [self scrollToString:stringToFind];
+}
+
+- (BOOL)scrollToString:(NSString *)stringToFind searchOptions:(NSRegularExpressionOptions)options animated:(BOOL)animated atScrollPosition:(ICTextViewScrollPosition)scrollPosition
+{
+    self.animatedSearch = animated;
+    self.scrollPosition = scrollPosition;
+    self.searchOptions = options;
+    return [self scrollToString:stringToFind];
+}
+
+- (BOOL)scrollToString:(NSString *)stringToFind searchOptions:(NSRegularExpressionOptions)options range:(NSRange)range animated:(BOOL)animated atScrollPosition:(ICTextViewScrollPosition)scrollPosition
+{
+    self.animatedSearch = animated;
+    self.scrollPosition = scrollPosition;
+    self.searchOptions = options;
+    self.searchRange = range;
+    return [self scrollToString:stringToFind];
+}
+
+- (void)scrollRangeToVisible:(NSRange)range consideringInsets:(BOOL)considerInsets animated:(BOOL)animated atScrollPosition:(ICTextViewScrollPosition)scrollPosition
+{
+    self.scrollPosition = scrollPosition;
+    [self scrollRangeToVisible:range consideringInsets:considerInsets animated:animated];
+}
+
+- (void)scrollRectToVisible:(CGRect)rect animated:(BOOL)animated consideringInsets:(BOOL)considerInsets atScrollPosition:(ICTextViewScrollPosition)scrollPosition
+{
+    self.scrollPosition = scrollPosition;
+    [self scrollRectToVisible:rect animated:animated consideringInsets:considerInsets];
+}
+
 @end

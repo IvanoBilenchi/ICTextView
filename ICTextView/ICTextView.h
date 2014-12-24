@@ -25,7 +25,7 @@
  * + Support for string and regex search and highlighting
  * * Highly customizable
  * * Doesn't use delegate methods (you can still implement your own)
- * + Methods to account for contentInsets in iOS 7
+ * + Methods to account for contentInsets in iOS 7+
  * * Contains workarounds for many known iOS 7+ UITextView bugs
  *
  *
@@ -224,5 +224,20 @@ typedef enum
 
 // Returns visible rect, eventually considering insets
 - (CGRect)visibleRectConsideringInsets:(BOOL)considerInsets;
+
+#pragma mark - Deprecated
+
+- (BOOL)scrollToMatch:(NSString *)pattern searchOptions:(NSRegularExpressionOptions)options __deprecated;
+- (BOOL)scrollToMatch:(NSString *)pattern searchOptions:(NSRegularExpressionOptions)options range:(NSRange)range __deprecated;
+- (BOOL)scrollToMatch:(NSString *)pattern searchOptions:(NSRegularExpressionOptions)options animated:(BOOL)animated atScrollPosition:(ICTextViewScrollPosition)scrollPosition __deprecated;
+- (BOOL)scrollToMatch:(NSString *)pattern searchOptions:(NSRegularExpressionOptions)options range:(NSRange)range animated:(BOOL)animated atScrollPosition:(ICTextViewScrollPosition)scrollPosition __deprecated;
+
+- (BOOL)scrollToString:(NSString *)stringToFind searchOptions:(NSRegularExpressionOptions)options __deprecated;
+- (BOOL)scrollToString:(NSString *)stringToFind searchOptions:(NSRegularExpressionOptions)options range:(NSRange)range __deprecated;
+- (BOOL)scrollToString:(NSString *)stringToFind searchOptions:(NSRegularExpressionOptions)options animated:(BOOL)animated atScrollPosition:(ICTextViewScrollPosition)scrollPosition __deprecated;
+- (BOOL)scrollToString:(NSString *)stringToFind searchOptions:(NSRegularExpressionOptions)options range:(NSRange)range animated:(BOOL)animated atScrollPosition:(ICTextViewScrollPosition)scrollPosition __deprecated;
+
+- (void)scrollRangeToVisible:(NSRange)range consideringInsets:(BOOL)considerInsets animated:(BOOL)animated atScrollPosition:(ICTextViewScrollPosition)scrollPosition __deprecated;
+- (void)scrollRectToVisible:(CGRect)rect animated:(BOOL)animated consideringInsets:(BOOL)considerInsets atScrollPosition:(ICTextViewScrollPosition)scrollPosition __deprecated;
 
 @end
