@@ -720,6 +720,8 @@ static BOOL shouldApplyTextContainerFix;
     else
         contentOffset.y = y;
     
+    ICTextViewLog(@"%@", [NSValue valueWithCGPoint:contentOffset]);
+    
     [self setContentOffset:contentOffset animated:animated];
 }
 
@@ -779,13 +781,12 @@ static BOOL shouldApplyTextContainerFix;
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
     if (shouldApplyTextContainerFix)
         return [self initWithFrame:frame textContainer:nil];
-    else
 #endif
-    {
-        if ((self = [super initWithFrame:frame]) && highlightingSupported)
-            [self initialize];
-        return self;
-    }
+    
+    if ((self = [super initWithFrame:frame]) && highlightingSupported)
+        [self initialize];
+    
+    return self;
 }
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
@@ -806,6 +807,7 @@ static BOOL shouldApplyTextContainerFix;
     
     if ((self = [super initWithFrame:frame textContainer:textContainer]) && highlightingSupported)
         [self initialize];
+    
     return self;
 }
 #endif
@@ -852,15 +854,17 @@ static BOOL shouldApplyTextContainerFix;
 - (void)awakeFromNib
 {
     [super awakeFromNib];
-    if (shouldApplyCharacterRangeAtPointFix && !_appliedCharacterRangeAtPointFix)
-        [self characterRangeAtPointBugFix];
+    [self characterRangeAtPointFix];
 }
 
-- (void)characterRangeAtPointBugFix
+- (void)characterRangeAtPointFix
 {
-    [self select:self];
-    [self setSelectedTextRange:nil];
-    _appliedCharacterRangeAtPointFix = YES;
+    if (shouldApplyCharacterRangeAtPointFix && !_appliedCharacterRangeAtPointFix && self.text.length > 1)
+    {
+        [self select:self];
+        [self setSelectedTextRange:nil];
+        _appliedCharacterRangeAtPointFix = YES;
+    }
 }
 
 - (void)scrollToCaretPosition:(UITextPosition *)position
@@ -874,9 +878,7 @@ static BOOL shouldApplyTextContainerFix;
 - (void)setAttributedText:(NSAttributedString *)attributedText
 {
     [super setAttributedText:attributedText];
-    
-    if (shouldApplyCharacterRangeAtPointFix && !_appliedCharacterRangeAtPointFix && attributedText.length > 1)
-        [self characterRangeAtPointBugFix];
+    [self characterRangeAtPointFix];
 }
 
 - (void)setSelectedTextRange:(UITextRange *)selectedTextRange
@@ -890,13 +892,14 @@ static BOOL shouldApplyTextContainerFix;
 - (void)setText:(NSString *)text
 {
     [super setText:text];
-    
-    if (shouldApplyCharacterRangeAtPointFix && !_appliedCharacterRangeAtPointFix && text.length > 1)
-        [self characterRangeAtPointBugFix];
+    [self characterRangeAtPointFix];
 }
 #endif
 
 #pragma mark - Deprecated
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-implementations"
 
 - (BOOL)scrollToMatch:(NSString *)pattern searchOptions:(NSRegularExpressionOptions)options
 {
@@ -969,5 +972,7 @@ static BOOL shouldApplyTextContainerFix;
     self.scrollPosition = scrollPosition;
     [self scrollRectToVisible:rect animated:animated consideringInsets:considerInsets];
 }
+
+#pragma clang diagnostic pop
 
 @end
