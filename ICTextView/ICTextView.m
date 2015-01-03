@@ -55,15 +55,15 @@ static NSUInteger const ICSearchIndexAuto = NSUIntegerMax;
 #pragma mark - Globals
 
 // Search results highlighting supported starting from iOS 5.x
-static BOOL highlightingSupported;
+static BOOL highlightingSupported = NO;
 
 // Accounts for textContainerInset on iOS 7+
-static BOOL textContainerInsetSupported;
+static BOOL textContainerInsetSupported = NO;
 
 // Fixes
-static BOOL shouldApplyCaretFix;
-static BOOL shouldApplyCharacterRangeAtPointFix;
-static BOOL shouldApplyTextContainerFix;
+static BOOL shouldApplyCaretFix = NO;
+static BOOL shouldApplyCharacterRangeAtPointFix = NO;
+static BOOL shouldApplyTextContainerFix = NO;
 
 #pragma mark - Extension
 
@@ -130,7 +130,9 @@ static BOOL shouldApplyTextContainerFix;
     if (self == [ICTextView class])
     {
         highlightingSupported = [self conformsToProtocol:@protocol(UITextInput)];
-        textContainerInsetSupported = [self instancesRespondToSelector:@selector(textContainerInset)];
+        
+        // Using NSSelectorFromString() instead of @selector() to suppress unneccessary warnings on older SDKs
+        textContainerInsetSupported = [self instancesRespondToSelector:NSSelectorFromString(@"textContainerInset")];
         
         shouldApplyCaretFix = NSFoundationVersionNumber >= NSFoundationVersionNumber_iOS_7_0;
         shouldApplyCharacterRangeAtPointFix = NSFoundationVersionNumber >= NSFoundationVersionNumber_iOS_7_0 && NSFoundationVersionNumber <= NSFoundationVersionNumber_iOS_7_1;
@@ -293,6 +295,11 @@ static BOOL shouldApplyTextContainerFix;
     }
     
     // Calculate rect for range
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
+    if (NSFoundationVersionNumber >= NSFoundationVersionNumber_iOS_7_0)
+        [self.layoutManager ensureLayoutForTextContainer:self.textContainer];
+#endif
+    
     UITextPosition *startPosition = [self positionFromPosition:self.beginningOfDocument offset:range.location];
     UITextPosition *endPosition = [self positionFromPosition:startPosition offset:range.length];
     UITextRange *textRange = [self textRangeFromPosition:startPosition toPosition:endPosition];
@@ -304,7 +311,7 @@ static BOOL shouldApplyTextContainerFix;
 
 - (void)scrollRectToVisible:(CGRect)rect animated:(BOOL)animated consideringInsets:(BOOL)considerInsets
 {
-    UIEdgeInsets contentInset = considerInsets ? self.contentInset : UIEdgeInsetsZero;
+    UIEdgeInsets contentInset = considerInsets ? [self totalContentInset] : UIEdgeInsetsZero;
     CGRect visibleRect = [self visibleRectConsideringInsets:considerInsets];
     CGRect toleranceArea = visibleRect;
     CGFloat y = rect.origin.y - contentInset.top;
@@ -365,23 +372,7 @@ static BOOL shouldApplyTextContainerFix;
     CGRect visibleRect = self.bounds;
     
     if (considerInsets)
-    {
-        UIEdgeInsets contentInset = self.contentInset;
-        
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
-        if (textContainerInsetSupported)
-        {
-            UIEdgeInsets textContainerInset = self.textContainerInset;
-            
-            contentInset.top += textContainerInset.top;
-            contentInset.bottom += textContainerInset.bottom;
-            contentInset.left += textContainerInset.left;
-            contentInset.right += textContainerInset.right;
-        }
-#endif
-        
-        visibleRect = UIEdgeInsetsInsetRect(visibleRect, contentInset);
-    }
+        visibleRect = UIEdgeInsetsInsetRect(visibleRect, [self totalContentInset]);
     
     return visibleRect;
 }
@@ -705,7 +696,7 @@ static BOOL shouldApplyTextContainerFix;
     
     if (considerInsets)
     {
-        UIEdgeInsets contentInset = self.contentInset;
+        UIEdgeInsets contentInset = [self totalContentInset];
         min -= contentInset.top;
         max += contentInset.bottom;
     }
@@ -719,8 +710,6 @@ static BOOL shouldApplyTextContainerFix;
         contentOffset.y = min;
     else
         contentOffset.y = y;
-    
-    ICTextViewLog(@"%@", [NSValue valueWithCGPoint:contentOffset]);
     
     [self setContentOffset:contentOffset animated:animated];
 }
@@ -752,6 +741,26 @@ static BOOL shouldApplyTextContainerFix;
             [self scrollToCaretPosition:selectedTextRange.end];
     }
 #endif
+}
+
+// Accounts for both contentInset and textContainerInset
+- (UIEdgeInsets)totalContentInset
+{
+    UIEdgeInsets contentInset = self.contentInset;
+    
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
+    if (textContainerInsetSupported)
+    {
+        UIEdgeInsets textContainerInset = self.textContainerInset;
+        
+        contentInset.top += textContainerInset.top;
+        contentInset.bottom += textContainerInset.bottom;
+        contentInset.left += textContainerInset.left;
+        contentInset.right += textContainerInset.right;
+    }
+#endif
+    
+    return contentInset;
 }
 
 #pragma mark - Overrides
