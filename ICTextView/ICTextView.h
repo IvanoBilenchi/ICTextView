@@ -22,11 +22,11 @@
  *
  * Features:
  * ---------
- * + Support for string and regex search and highlighting
- * * Highly customizable
- * * Doesn't use delegate methods (you can still implement your own)
- * + Methods to account for contentInsets in iOS 7+
- * * Contains workarounds for many known iOS 7+ UITextView bugs
+ * - Support for string and regex search and highlighting.
+ * - Highly customizable.
+ * - Doesn't use delegate methods (you can still implement your own).
+ * - Methods to account for contentInsets in iOS 7+.
+ * - Contains workarounds for many known iOS 7+ UITextView bugs.
  *
  *
  * Compatibility:
@@ -80,9 +80,9 @@
  * -------------------------
  * Long story short, iOS 7 completely broke `UITextView`. `ICTextView` contains fixes for some very common issues:
  *
- * - NSTextContainer bugfix: `UITextView` initialized via `initWithFrame:` had an erratic behavior due to an uninitialized or wrong `NSTextContainer`
- * - Caret bugfix: the caret didn't consider `contentInset` and often went out of the visible area
- * - characterRangeAtPoint bugfix: `characterRangeAtPoint:` always returned `nil`
+ * - NSTextContainer bugfix: `UITextView` initialized via `initWithFrame:` had an erratic behavior due to an uninitialized or wrong `NSTextContainer`.
+ * - Caret bugfix: the caret didn't consider `contentInset` and often went out of the visible area.
+ * - characterRangeAtPoint bugfix: `characterRangeAtPoint:` always returned `nil`.
  *
  * These fixes, combined with the custom methods to account for `contentInset`, should make working with `ICTextView` much more bearable
  * than working with the standard `UITextView`.
@@ -92,7 +92,7 @@
  *
  * License:
  * --------
- * Copyright (c) 2013-2014 Ivano Bilenchi
+ * Copyright (c) 2013-2015 Ivano Bilenchi
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -120,109 +120,212 @@
 
 #pragma mark Constants
 
+/// Scroll position for ICTextView's scroll and search methods.
 typedef enum
 {
-    ICTextViewScrollPositionNone,       // Scrolls until the rect/range/text is visible with minimal movement
-    ICTextViewScrollPositionTop,        // Scrolls until the rect/range/text is on top of the text view
-    ICTextViewScrollPositionMiddle,     // Scrolls until the rect/range/text is in the middle of the text view
-    ICTextViewScrollPositionBottom      // Scrolls until the rect/range/text is at the bottom of the text view
+    /// Scrolls until the rect/range/text is visible with minimal movement.
+    ICTextViewScrollPositionNone,
+    
+    /// Scrolls until the rect/range/text is on top of the text view.
+    ICTextViewScrollPositionTop,
+    
+    /// Scrolls until the rect/range/text is in the middle of the text view.
+    ICTextViewScrollPositionMiddle,
+    
+    /// Scrolls until the rect/range/text is at the bottom of the text view.
+    ICTextViewScrollPositionBottom
 } ICTextViewScrollPosition;
 
+/// Direction for ICTextView's search methods.
 typedef enum
 {
-    ICTextViewSearchDirectionForward,   // Forward search
-    ICTextViewSearchDirectionBackward   // Backward search
+    /// Forward search.
+    ICTextViewSearchDirectionForward,
+    
+    /// Backward search.
+    ICTextViewSearchDirectionBackward
 } ICTextViewSearchDirection;
 
 #pragma mark - Interface
 
+/**
+ UITextView subclass with optimized support for string/regex search and highlighting.
+ 
+ It also features some iOS 7+ specific improvements and bugfixes to the standard UITextView.
+ */
 @interface ICTextView : UITextView
 
 #pragma mark - Configuration
 
 #pragma mark -- Appearance --
 
-// Color of the primary search highlight (default = RGB 150/200/255)
+/// Color of the primary search highlight (default = RGB 150/200/255).
 @property (nonatomic, strong) UIColor *primaryHighlightColor;
 
-// Color of the secondary search highlights (default = RGB 215/240/255)
+/// Color of the secondary search highlights (default = RGB 215/240/255).
 @property (nonatomic, strong) UIColor *secondaryHighlightColor;
 
-// Highlight corner radius (default = fontSize * 0.2)
+/// Highlight corner radius (default = fontSize * 0.2).
 @property (nonatomic) CGFloat highlightCornerRadius;
 
 #pragma mark -- Behaviour --
 
-// Toggles scroll animation while searching (default = YES)
+/// Toggles scroll animation while searching (default = YES).
 @property (nonatomic) BOOL animatedSearch;
 
-// Toggles circular search (default = NO)
+/// Toggles circular search (default = NO).
 @property (nonatomic) BOOL circularSearch;
 
-// Toggles highlights for search results (default = YES // NO = only scrolls)
+/// Toggles highlights for search results (default = YES).
 @property (nonatomic) BOOL highlightSearchResults;
 
-// Scroll position, see "#pragma mark Constants" for details (default = ICTextViewScrollPositionNone)
+/**
+ Scroll position (default = ICTextViewScrollPositionNone).
+ 
+ @see ICTextViewScrollPosition
+ */
 @property (nonatomic) ICTextViewScrollPosition scrollPosition;
 
-// Regex options to apply while searching (default = 0)
+/// Regex options to apply while searching (default = 0).
 @property (nonatomic) NSRegularExpressionOptions searchOptions;
 
-// Allows restricting search to a specific range (default = { 0, NSUIntegerMax })
+/// Allows restricting search to a specific range (default = { 0, NSUIntegerMax }).
 @property (nonatomic) NSRange searchRange;
 
 #pragma mark -- Performance --
 
-// Maximum number of cached highlighted matches (default = 100)
-// Note 1: setting this too high will impact memory usage
-// Note 2: this value is indicative. More search results will be highlighted if they are on-screen
+/**
+ Maximum number of cached highlighted matches (default = 100).
+ 
+ @note This value is indicative. More search results will be highlighted if they are on-screen.
+ 
+ @warning Setting this too high will impact memory usage.
+ */
 @property (nonatomic) NSUInteger maxHighlightedMatches;
 
-// Delay for the auto-refresh while scrolling feature (default = 0.2 // min = 0.1 // off = 0.0)
-// Note: decreasing/disabling this may improve performance when self.text is very big
+/**
+ Delay for the 'auto-refresh while scrolling' feature (default = 0.2 // min = 0.1 // off = 0.0).
+ 
+ @note Decreasing/disabling this may improve performance when self.text is very big.
+ */
 @property (nonatomic) NSTimeInterval scrollAutoRefreshDelay;
 
 #pragma mark - Output
 
-// String found during last search
+/// String found during last search.
 - (NSString *)foundString;
 
-// Index of the string found during last search (NSNotFound if not found)
+/// Index of the string found during last search (NSNotFound if not found).
 - (NSUInteger)indexOfFoundString;
 
-// Number of matches in last search
+/// Number of matches in last search.
 - (NSUInteger)numberOfMatches;
 
-// Range of the string found during last search ({ NSNotFound, 0 } if not found)
+/// Range of the string found during last search ({ NSNotFound, 0 } if not found).
 - (NSRange)rangeOfFoundString;
 
 #pragma mark - Search
 
-// Resets search, starts from top
+/// Resets search, starts from top.
 - (void)resetSearch;
 
-// Scrolls to regex match (returns YES if found, NO otherwise)
+/**
+ Scrolls to regex match.
+ 
+ @param pattern Regular expression search pattern.
+ 
+ @return YES if found, NO otherwise.
+ */
 - (BOOL)scrollToMatch:(NSString *)pattern;
+
+/**
+ Scrolls to next regex match.
+ 
+ @see ICTextViewSearchDirection
+ 
+ @param pattern Regular expression search pattern.
+ @param searchDirection Forward or backward search.
+ 
+ @return YES if found, NO otherwise.
+ */
 - (BOOL)scrollToMatch:(NSString *)pattern searchDirection:(ICTextViewSearchDirection)searchDirection;
 
-// Scrolls to string (returns YES if found, NO otherwise)
+/**
+ Scrolls to next matching string.
+ 
+ @param stringToFind String to find.
+ 
+ @return YES if found, NO otherwise.
+ */
 - (BOOL)scrollToString:(NSString *)stringToFind;
+
+/**
+ Scrolls to next matching string.
+ 
+ @see ICTextViewSearchDirection
+ 
+ @param stringToFind String to find.
+ @param searchDirection Forward or backward search.
+ 
+ @return YES if found, NO otherwise.
+ */
 - (BOOL)scrollToString:(NSString *)stringToFind searchDirection:(ICTextViewSearchDirection)searchDirection;
 
 #pragma mark - Misc
 
-// Scrolls to visible range, eventually considering insets
+/**
+ Scrolls until the specified text range is completely visible. Animated.
+ 
+ @param range Range to scroll to.
+ @param considerInsets Consider 'contentInset' and 'textContainerInset' while computing the visible area.
+ */
 - (void)scrollRangeToVisible:(NSRange)range consideringInsets:(BOOL)considerInsets;
+
+/**
+ Scrolls until the specified text range is completely visible.
+ 
+ @param range Range to scroll to.
+ @param considerInsets Consider 'contentInset' and 'textContainerInset' while computing the visible area.
+ @param animated Toggles scroll animation.
+ */
 - (void)scrollRangeToVisible:(NSRange)range consideringInsets:(BOOL)considerInsets animated:(BOOL)animated;
 
-// Scrolls to visible rect, eventually considering insets
+/**
+ Scrolls until the specified rect is completely visible.
+ 
+ @param rect Rect to scroll to.
+ @param animated Toggles scroll animation.
+ @param considerInsets Consider 'contentInset' and 'textContainerInset' while computing the visible area.
+ */
 - (void)scrollRectToVisible:(CGRect)rect animated:(BOOL)animated consideringInsets:(BOOL)considerInsets;
 
-// Returns visible range, with start and end position, eventually considering insets
+/**
+ Currently visible text range.
+ 
+ @param considerInsets Consider 'contentInset' and 'textContainerInset' while computing the visible area.
+ 
+ @return Visible text range.
+ */
 - (NSRange)visibleRangeConsideringInsets:(BOOL)considerInsets;
+
+/**
+ Currently visible text range.
+ 
+ @param considerInsets Consider 'contentInset' and 'textContainerInset' while computing the visible area.
+ @param startPosition Returns the starting position of the text range. Pass nil if you don't need this information.
+ @param endPosition Returns the ending position of the text range. Pass nil if you don't need this information.
+ 
+ @return Visible text range.
+ */
 - (NSRange)visibleRangeConsideringInsets:(BOOL)considerInsets startPosition:(UITextPosition *__autoreleasing *)startPosition endPosition:(UITextPosition *__autoreleasing *)endPosition;
 
-// Returns visible rect, eventually considering insets
+/**
+ Currently visible rect.
+ 
+ @param considerInsets Consider 'contentInset' and 'textContainerInset' while computing the visible area.
+ 
+ @return Visible rect.
+ */
 - (CGRect)visibleRectConsideringInsets:(BOOL)considerInsets;
 
 #pragma mark - Deprecated
