@@ -16,8 +16,8 @@
  *
  * Description:
  * ------------
- * ICTextView is a UITextView subclass with optimized support for string/regex search and highlighting.
- * It also features some iOS 7+ specific improvements and bugfixes to the standard UITextView.
+ * `ICTextView` is a `UITextView` subclass with optimized support for string/regex search and highlighting.
+ * It also features some iOS 7+ specific improvements and bugfixes to the standard `UITextView`.
  *
  *
  * Features:
@@ -25,13 +25,13 @@
  * - Support for string and regex search and highlighting.
  * - Highly customizable.
  * - Doesn't use delegate methods (you can still implement your own).
- * - Methods to account for contentInsets in iOS 7+.
- * - Contains workarounds for many known iOS 7+ UITextView bugs.
+ * - Methods to account for `contentInset` and `textContainerInset` in iOS 7+.
+ * - Contains workarounds for many known iOS 7+ `UITextView` bugs.
  *
  *
  * Compatibility:
  * --------------
- * ICTextView is compatible with iOS 4.x and above.
+ * `ICTextView` is compatible with iOS 4.x and above.
  * It can be compiled with any iOS SDK starting from 5.x.
  * Match highlighting is supported starting from iOS 5.x.
  *
@@ -63,7 +63,7 @@
  *
  *   The `resetSearch` method lets you restore the search variables to their starting values, effectively resetting the search.
  *   Calls to `resetSearch` cause the highlights to be deallocated, regardless of the `maxHighlightedMatches` variable.
- *   After this method has been called, ICTextView stops highlighting results until a new search is performed.
+ *   After this method has been called, `ICTextView` stops highlighting results until a new search is performed.
  *
  *
  *   Content insets methods:
@@ -81,10 +81,10 @@
  * Long story short, iOS 7 completely broke `UITextView`. `ICTextView` contains fixes for some very common issues:
  *
  * - NSTextContainer bugfix: `UITextView` initialized via `initWithFrame:` had an erratic behavior due to an uninitialized or wrong `NSTextContainer`.
- * - Caret bugfix: the caret didn't consider `contentInset` and often went out of the visible area.
+ * - Caret bugfix: the caret didn't consider `contentInset` nor `textContainerInset` and often went out of the visible area.
  * - characterRangeAtPoint bugfix: `characterRangeAtPoint:` always returned `nil`.
  *
- * These fixes, combined with the custom methods to account for `contentInset`, should make working with `ICTextView` much more bearable
+ * These fixes, combined with the custom methods to account for `contentInset` and `textContainerInset`, should make working with `ICTextView` much more bearable
  * than working with the standard `UITextView`.
  *
  * Bugfixes introduced by `ICTextView` will be removed (or isolated) as soon as they are fixed by Apple.
