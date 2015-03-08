@@ -16,7 +16,7 @@
  *
  * License:
  * --------
- * Copyright (c) 2013-2014 Ivano Bilenchi
+ * Copyright (c) 2013-2015 Ivano Bilenchi
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -216,25 +216,28 @@ static BOOL shouldApplyTextContainerFix = NO;
     }
     
     NSRange matchRange = [self rangeOfFoundString];
+    BOOL found = NO;
     
     if (matchRange.location == NSNotFound)
     {
         // Match not found
         _searching = NO;
-        return NO;
+    }
+    else
+    {
+        // Match found
+        found = YES;
+        _searchVisibleRange = NO;
+        
+        // Add highlights
+        if (highlightingSupported && _highlightSearchResults)
+            [self highlightOccurrencesInMaskedVisibleRange];
+        
+        // Scroll
+        [self scrollRangeToVisible:matchRange consideringInsets:YES animated:_animatedSearch];
     }
     
-    // Match found
-    _searchVisibleRange = NO;
-    
-    // Add highlights
-    if (highlightingSupported && _highlightSearchResults)
-        [self highlightOccurrencesInMaskedVisibleRange];
-    
-    // Scroll
-    [self scrollRangeToVisible:matchRange consideringInsets:YES animated:_animatedSearch];
-    
-    return YES;
+    return found;
 }
 
 - (BOOL)scrollToString:(NSString *)stringToFind
