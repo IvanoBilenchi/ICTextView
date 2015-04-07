@@ -30,8 +30,6 @@ It also features some iOS 7+ specific improvements and bugfixes to the standard 
 
 **Supported iOS SDKs:** 5.x and above.
 
-**!!!WARNING!!!** - contains ARC enabled code. Beware, MRR purists.
-
 
 #### Installation
 
@@ -40,6 +38,8 @@ It also features some iOS 7+ specific improvements and bugfixes to the standard 
 Alternatively, you can clone this repo, or even just grab the [ICTextView](ICTextView) folder and put it somewhere in your project.
 
 `ICTextView` requires the `QuartzCore` framework, so make sure to link against it in your build settings.
+
+It is an ARC only project, meaning you must compile it with ARC enabled (either globally or specifically for every `ICTextView` .m source file).
 
 `#import "ICTextView.h"` and you're ready to go.
 
