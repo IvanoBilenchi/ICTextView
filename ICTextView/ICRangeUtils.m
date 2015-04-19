@@ -50,20 +50,16 @@ NSComparisonResult (^ICRangeComparator)(NSValue *rangeValue1, NSValue *rangeValu
     NSRange range1 = [rangeValue1 rangeValue];
     NSRange range2 = [rangeValue2 rangeValue];
     
+    NSComparisonResult result = NSOrderedSame;
+    
     if (range1.location < range2.location)
-        return NSOrderedAscending;
+        result = NSOrderedAscending;
+    else if (range1.location > range2.location)
+        result = NSOrderedDescending;
+    else if (range1.length < range2.length)
+        result = NSOrderedAscending;
+    else if (range1.length > range2.length)
+        result = NSOrderedDescending;
     
-    if (range1.location > range2.location)
-        return NSOrderedDescending;
-    
-    if (range1.location == range2.location)
-    {
-        if (range1.length < range2.length)
-            return NSOrderedAscending;
-        
-        if (range1.length > range2.length)
-            return NSOrderedDescending;
-    }
-    
-    return NSOrderedSame;
+    return result;
 };
