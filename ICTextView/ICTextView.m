@@ -61,6 +61,7 @@ static BOOL highlightingSupported = NO;
 static BOOL textContainerInsetSupported = NO;
 
 // Fixes
+static BOOL shouldApplyBecomeFirstResponderFix = NO;
 static BOOL shouldApplyCaretFix = NO;
 static BOOL shouldApplyCharacterRangeAtPointFix = NO;
 static BOOL shouldApplyTextContainerFix = NO;
@@ -85,7 +86,7 @@ static BOOL shouldApplyTextContainerFix = NO;
     BOOL _searchVisibleRange;
     
     // Fixes
-    BOOL _appliedCharacterRangeAtPointFix;
+    BOOL _appliedSelectionFix;
 }
 
 @end
@@ -134,6 +135,7 @@ static BOOL shouldApplyTextContainerFix = NO;
         // Using NSSelectorFromString() instead of @selector() to suppress unneccessary warnings on older SDKs
         textContainerInsetSupported = [self instancesRespondToSelector:NSSelectorFromString(@"textContainerInset")];
         
+        shouldApplyBecomeFirstResponderFix = NSFoundationVersionNumber >= NSFoundationVersionNumber_iOS_7_0;
         shouldApplyCaretFix = NSFoundationVersionNumber >= NSFoundationVersionNumber_iOS_7_0;
         shouldApplyCharacterRangeAtPointFix = NSFoundationVersionNumber >= NSFoundationVersionNumber_iOS_7_0 && NSFoundationVersionNumber <= NSFoundationVersionNumber_iOS_7_1;
         shouldApplyTextContainerFix = NSFoundationVersionNumber >= NSFoundationVersionNumber_iOS_7_0;
@@ -811,7 +813,7 @@ static BOOL shouldApplyTextContainerFix = NO;
         NSTextStorage *textStorage = [[NSTextStorage alloc] init];
         NSLayoutManager *layoutManager = [[NSLayoutManager alloc] init];
         [textStorage addLayoutManager:layoutManager];
-        localTextContainer = [[NSTextContainer alloc] initWithSize:frame.size];
+        localTextContainer = [[NSTextContainer alloc] initWithSize:CGSizeMake(frame.size.width, CGFLOAT_MAX)];
         localTextContainer.heightTracksTextView = YES;
         localTextContainer.widthTracksTextView = YES;
         [layoutManager addTextContainer:localTextContainer];
@@ -863,20 +865,20 @@ static BOOL shouldApplyTextContainerFix = NO;
 
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
 
-- (void)awakeFromNib
+- (void)applySelectionFix
 {
-    [super awakeFromNib];
-    [self characterRangeAtPointFix];
-}
-
-- (void)characterRangeAtPointFix
-{
-    if (shouldApplyCharacterRangeAtPointFix && !_appliedCharacterRangeAtPointFix && self.text.length > 1)
+    if ((shouldApplyBecomeFirstResponderFix || shouldApplyCharacterRangeAtPointFix) && !_appliedSelectionFix && self.text.length > 1)
     {
         [self select:self];
         [self setSelectedTextRange:nil];
-        _appliedCharacterRangeAtPointFix = YES;
+        _appliedSelectionFix = YES;
     }
+}
+
+- (void)awakeFromNib
+{
+    [super awakeFromNib];
+    [self applySelectionFix];
 }
 
 - (void)scrollToCaretPosition:(UITextPosition *)position
@@ -890,7 +892,7 @@ static BOOL shouldApplyTextContainerFix = NO;
 - (void)setAttributedText:(NSAttributedString *)attributedText
 {
     [super setAttributedText:attributedText];
-    [self characterRangeAtPointFix];
+    [self applySelectionFix];
 }
 
 - (void)setSelectedTextRange:(UITextRange *)selectedTextRange
@@ -904,7 +906,7 @@ static BOOL shouldApplyTextContainerFix = NO;
 - (void)setText:(NSString *)text
 {
     [super setText:text];
-    [self characterRangeAtPointFix];
+    [self applySelectionFix];
 }
 #endif
 
