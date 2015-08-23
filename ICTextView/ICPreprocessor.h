@@ -49,10 +49,6 @@
 #define NSFoundationVersionNumber_iOS_6_0 993.00
 #endif
 
-#ifndef NSFoundationVersionNumber_iOS_6_1
-#define NSFoundationVersionNumber_iOS_6_1 993.00
-#endif
-
 #ifndef NSFoundationVersionNumber_iOS_7_0
 #define NSFoundationVersionNumber_iOS_7_0 1047.20
 #endif

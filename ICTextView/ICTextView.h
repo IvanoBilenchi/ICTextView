@@ -4,11 +4,6 @@
  * https://github.com/Exile90/ICTextView.git
  *
  *
- * Version:
- * --------
- * 2.0.0
- *
- *
  * Authors:
  * --------
  * Ivano Bilenchi (@SoftHardW)

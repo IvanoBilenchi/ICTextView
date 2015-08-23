@@ -4,11 +4,6 @@
  * https://github.com/Exile90/ICTextView.git
  *
  *
- * Version:
- * --------
- * 2.0.0
- *
- *
  * Authors:
  * --------
  * Ivano Bilenchi (@SoftHardW)
@@ -47,10 +42,9 @@
 #pragma mark Extension
 
 @interface ICRegularExpression ()
-{
-    NSMutableArray *_cachedMatchRanges;
-    NSRegularExpression *_regex;
-}
+
+@property (nonatomic, strong, readonly) NSMutableArray *cachedMatchRanges;
+@property (nonatomic, strong, readonly) NSRegularExpression *regex;
 
 @property (nonatomic, readwrite) NSUInteger indexOfCurrentMatch;
 
@@ -60,10 +54,40 @@
 
 @implementation ICRegularExpression
 
-#pragma mark - Synthesized properties
+#pragma mark - Properties
 
-@synthesize circular = _circular;
+// cachedMatchRanges
+@synthesize cachedMatchRanges = _cachedMatchRanges;
+
+- (NSMutableArray *)cachedMatchRanges
+{
+    if (!_cachedMatchRanges)
+    {
+        NSMutableArray *cachedMatchRanges = [[NSMutableArray alloc] init];
+        NSString *string = self.string;
+        [self.regex enumerateMatchesInString:string
+                                     options:(NSMatchingOptions)0
+                                       range:NSMakeRange(0,string.length)
+                                  usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
+                                      [cachedMatchRanges addObject:[NSValue valueWithRange:result.range]];
+                                  }];
+        
+        _cachedMatchRanges = cachedMatchRanges;
+    }
+    return _cachedMatchRanges;
+}
+
+// indexOfCurrentMatch
 @synthesize indexOfCurrentMatch = _indexOfCurrentMatch;
+
+- (void)setIndexOfCurrentMatch:(NSUInteger)indexOfCurrentMatch
+{
+    _indexOfCurrentMatch = (indexOfCurrentMatch < self.numberOfMatches ? indexOfCurrentMatch : NSNotFound);
+}
+
+// Others
+@synthesize circular = _circular;
+@synthesize regex = _regex;
 @synthesize string = _string;
 
 #pragma mark - Public methods
@@ -81,33 +105,25 @@
         if (localError)
             return nil;
         
-        _cachedMatchRanges = [[NSMutableArray alloc] init];
         _indexOfCurrentMatch = NSNotFound;
         _string = string ?: [NSString string];
-        
-        [_regex enumerateMatchesInString:_string
-                                 options:0
-                                   range:NSMakeRange(0, string.length)
-                              usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
-                                  [_cachedMatchRanges addObject:[NSValue valueWithRange:result.range]];
-        }];
     }
     return self;
 }
 
 - (NSUInteger)numberOfMatches
 {
-    return _cachedMatchRanges.count;
+    return self.cachedMatchRanges.count;
 }
 
 - (NSRegularExpressionOptions)options
 {
-    return _regex.options;
+    return self.regex.options;
 }
 
 - (NSString *)pattern
 {
-    return _regex.pattern;
+    return self.regex.pattern;
 }
 
 - (NSRange)rangeOfCurrentMatch
@@ -142,7 +158,7 @@
     if (index < self.numberOfMatches)
     {
         self.indexOfCurrentMatch = index;
-        returnRange = [[_cachedMatchRanges objectAtIndex:index] rangeValue];
+        returnRange = [[self.cachedMatchRanges objectAtIndex:index] rangeValue];
     }
     else
         self.indexOfCurrentMatch = NSNotFound;
@@ -179,38 +195,36 @@
 - (NSArray *)rangesOfMatchesInRange:(NSRange)range
 {
     NSRange indexRange = [self indexRangeOfMatchesInRange:range];
-    return (NSEqualRanges(indexRange, ICRangeNotFound) ? [NSArray array] : [_cachedMatchRanges subarrayWithRange:indexRange]);
+    return (NSEqualRanges(indexRange, ICRangeNotFound) ? [NSArray array] : [self.cachedMatchRanges subarrayWithRange:indexRange]);
 }
 
-- (NSRange)rangeOfFirstCachedMatch{
-    return [[_cachedMatchRanges firstObject] rangeValue];
+- (NSRange)rangeOfFirstCachedMatch
+{
+    return [[self.cachedMatchRanges firstObject] rangeValue];
 }
 
-- (NSRange)rangeOfLastCachedMatch{
-    return [[_cachedMatchRanges lastObject] rangeValue];
+- (NSRange)rangeOfLastCachedMatch
+{
+    return [[self.cachedMatchRanges lastObject] rangeValue];
 }
 
 #pragma mark - Private methods
-
-- (void)setIndexOfCurrentMatch:(NSUInteger)indexOfCurrentMatch
-{
-    _indexOfCurrentMatch = (indexOfCurrentMatch < self.numberOfMatches ? indexOfCurrentMatch : NSNotFound);
-}
 
 - (NSUInteger)indexOfFirstMatchInRange:(NSRange)range
 {
     NSValue *comparisonRangeValue = [NSValue valueWithRange:NSMakeRange(range.location, 0)];
     NSUInteger count = self.numberOfMatches;
+    NSArray *cachedMatchRanges = self.cachedMatchRanges;
     
-    NSUInteger indexOfFirstPossibleRange = [_cachedMatchRanges indexOfObject:comparisonRangeValue
-                                                               inSortedRange:NSMakeRange(0, count)
-                                                                     options:NSBinarySearchingInsertionIndex
-                                                             usingComparator:ICRangeComparator];
+    NSUInteger indexOfFirstPossibleRange = [cachedMatchRanges indexOfObject:comparisonRangeValue
+                                                              inSortedRange:NSMakeRange(0, count)
+                                                                    options:NSBinarySearchingInsertionIndex
+                                                            usingComparator:ICRangeComparator];
     
     if (indexOfFirstPossibleRange >= count)
         return NSNotFound;
     
-    NSRange possibleRange = [[_cachedMatchRanges objectAtIndex:indexOfFirstPossibleRange] rangeValue];
+    NSRange possibleRange = [[cachedMatchRanges objectAtIndex:indexOfFirstPossibleRange] rangeValue];
     NSUInteger returnIndex = NSNotFound;
     
     if (ICRangeContainsRange(range, possibleRange))
@@ -234,7 +248,7 @@
     
     NSRange returnRange = NSMakeRange(indexOfFirstMatch, 0);
     
-    for (NSValue *rangeValue in [_cachedMatchRanges subarrayWithRange:NSMakeRange(indexOfFirstMatch, self.numberOfMatches - indexOfFirstMatch)])
+    for (NSValue *rangeValue in [self.cachedMatchRanges subarrayWithRange:NSMakeRange(indexOfFirstMatch, self.numberOfMatches - indexOfFirstMatch)])
     {
         NSRange resultRange = rangeValue.rangeValue;
         
