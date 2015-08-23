@@ -1,3 +1,8 @@
+### 2.0.1 (2015-08-23)
+
+* Adopted stricter compiler warnings and fixed all of them.
+* Minor refactoring.
+
 ### 2.0.0 (2015-04-20)
 
 * Added number of matches property.

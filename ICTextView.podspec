@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = 'ICTextView'
-  s.version      = '2.0.0'
+  s.version      = '2.0.1'
   s.summary      = 'UITextView subclass with optimized support for string/regex search and highlighting.'
 
   s.description  = <<-DESC
