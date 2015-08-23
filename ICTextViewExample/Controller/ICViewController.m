@@ -8,7 +8,7 @@
 
 #import "ICViewController.h"
 #import "ICTextView.h"
-#import "Compatibility.h"
+#import "Preprocessor.h"
 
 #pragma mark Extension
 
@@ -99,9 +99,14 @@
                                                object:nil];
     
     ICTextView *textView = self.textView;
-	textView.text = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"ICTextView" ofType:@"h"]
-                                              encoding:NSASCIIStringEncoding
-                                                 error:NULL];
+    NSString *filePath = [[NSBundle mainBundle] pathForResource:@"ICTextView" ofType:@"h"];
+    
+    if (filePath)
+    {
+        textView.text = [NSString stringWithContentsOfFile:filePath
+                                                  encoding:NSASCIIStringEncoding
+                                                     error:NULL];
+    }
     
     [textView scrollRectToVisible:CGRectZero animated:NO consideringInsets:YES];
     [self updateCountLabel];
@@ -122,16 +127,19 @@
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
 {
+    _Pragma("unused(searchBar, searchText)")
     [self searchNextMatch];
 }
 
 - (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar
 {
+    _Pragma("unused(searchBar)")
     [self.textView becomeFirstResponder];
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
 {
+    _Pragma("unused(searchBar)")
     [self searchNextMatch];
 }
 

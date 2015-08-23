@@ -40,6 +40,8 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  **/
 
+#import <Foundation/Foundation.h>
+
 // For old SDKs
 #ifndef NSFoundationVersionNumber_iOS_5_0
 #define NSFoundationVersionNumber_iOS_5_0 881.00
@@ -56,6 +58,10 @@
 #ifndef NSFoundationVersionNumber_iOS_7_1
 #define NSFoundationVersionNumber_iOS_7_1 1047.25
 #endif
+
+// Unused variable suppression
+#define IC_Internal_Stringify(macro_arg_string_literal) #macro_arg_string_literal
+#define ICUnusedParameter(...) _Pragma(IC_Internal_Stringify(unused(__VA_ARGS__)))
 
 // Debug logging
 #if DEBUG

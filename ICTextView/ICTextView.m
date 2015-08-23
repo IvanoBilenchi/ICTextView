@@ -62,6 +62,18 @@ static BOOL shouldApplyCaretFix = NO;
 static BOOL shouldApplyCharacterRangeAtPointFix = NO;
 static BOOL shouldApplyTextContainerFix = NO;
 
+#pragma mark - Helper
+
+NS_INLINE BOOL ICCGFloatEqualOnScreen(CGFloat f1, CGFloat f2)
+{
+    static CGFloat epsilon = CGFLOAT_MIN;
+    
+    if (epsilon < 0.0f)
+        epsilon = (1.0f / [[UIScreen mainScreen] scale]);
+    
+    return (ABS(f1 - f2) < epsilon);
+}
+
 #pragma mark - Extension
 
 @interface ICTextView ()
@@ -468,7 +480,10 @@ static BOOL shouldApplyTextContainerFix = NO;
         for (UITextSelectionRect *selectionRect in highlightRects)
         {
             CGRect currentRect = selectionRect.rect;
-            if ((currentRect.origin.y == previousRect.origin.y) && (currentRect.origin.x == CGRectGetMaxX(previousRect)) && (currentRect.size.height == previousRect.size.height))
+            
+            if (ICCGFloatEqualOnScreen(currentRect.origin.y, previousRect.origin.y) &&
+                ICCGFloatEqualOnScreen(currentRect.origin.x, CGRectGetMaxX(previousRect)) &&
+                ICCGFloatEqualOnScreen(currentRect.size.height, previousRect.size.height))
             {
                 // Adjacent, add to previous rect
                 previousRect = CGRectMake(previousRect.origin.x, previousRect.origin.y, previousRect.size.width + currentRect.size.width, previousRect.size.height);
@@ -546,6 +561,7 @@ static BOOL shouldApplyTextContainerFix = NO;
             NSMutableArray *rangesArray = [rangeValues mutableCopy];
             NSMutableIndexSet *indexesToRemove = [[NSMutableIndexSet alloc] init];
             [rangeValues enumerateObjectsUsingBlock:^(NSValue *rangeValue, NSUInteger idx, BOOL *stop){
+                ICUnusedParameter(stop);
                 if ([highlightsByRange objectForKey:rangeValue])
                     [indexesToRemove addIndex:idx];
             }];
@@ -732,6 +748,7 @@ static BOOL shouldApplyTextContainerFix = NO;
     
     NSMutableArray *keysToRemove = [[NSMutableArray alloc] init];
     [highlightsByRange enumerateKeysAndObjectsUsingBlock:^(NSValue *rangeValue, NSArray *highlightsForRange, BOOL *stop){
+        ICUnusedParameter(stop);
         
         // Selectively remove highlights
         NSUInteger location = [rangeValue rangeValue].location;

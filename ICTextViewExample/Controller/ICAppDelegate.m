@@ -10,21 +10,24 @@
 #import "ICViewController.h"
 
 @interface ICAppDelegate ()
-{
-    UIWindow *_mainWindow;
-}
+@property (nonatomic, strong) UIWindow *mainWindow;
 @end
 
 @implementation ICAppDelegate
 
+@synthesize mainWindow = _mainWindow;
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    _mainWindow = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+    _Pragma("unused(application, launchOptions)")
+    
+    UIWindow *mainWindow = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     ICViewController *rootController = [[ICViewController alloc] init];
-    _mainWindow.rootViewController = rootController;
-    _mainWindow.backgroundColor = [UIColor whiteColor];
-    [_mainWindow makeKeyAndVisible];
+    mainWindow.rootViewController = rootController;
+    mainWindow.backgroundColor = [UIColor whiteColor];
+    [mainWindow makeKeyAndVisible];
     [[UIApplication sharedApplication] setStatusBarHidden:YES];
+    self.mainWindow = mainWindow;
     return YES;
 }
 

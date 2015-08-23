@@ -69,6 +69,7 @@
                                      options:(NSMatchingOptions)0
                                        range:NSMakeRange(0,string.length)
                                   usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
+                                      ICUnusedParameter(flags, stop);
                                       [cachedMatchRanges addObject:[NSValue valueWithRange:result.range]];
                                   }];
         
@@ -94,7 +95,7 @@
 
 - (id)initWithString:(NSString *)string pattern:(NSString *)pattern options:(NSRegularExpressionOptions)options error:(NSError *__autoreleasing *)error
 {
-    if (self = [super init])
+    if ((self = [super init]))
     {
         NSError *__autoreleasing localError = nil;
         _regex = [[NSRegularExpression alloc] initWithPattern:pattern options:options error:&localError];
