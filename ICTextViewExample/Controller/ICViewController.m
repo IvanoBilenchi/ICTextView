@@ -13,17 +13,24 @@
 #pragma mark Extension
 
 @interface ICViewController ()
-{
-    ICTextView *_textView;
-    UISearchBar *_searchBar;
-    UIToolbar *_toolBar;
-    UILabel *_countLabel;
-}
+
+@property (nonatomic, strong) ICTextView *textView;
+@property (nonatomic, strong) UISearchBar *searchBar;
+@property (nonatomic, strong) UIToolbar *toolBar;
+@property (nonatomic, strong) UILabel *countLabel;
+
 @end
 
 #pragma mark - Implementation
 
 @implementation ICViewController
+
+#pragma mark - Properties
+
+@synthesize countLabel = _countLabel;
+@synthesize searchBar = _searchBar;
+@synthesize textView = _textView;
+@synthesize toolBar = _toolBar;
 
 #pragma mark - Self
 
@@ -31,12 +38,12 @@
 {
     CGRect tempFrame = [UIScreen mainScreen].bounds;
     
-    _searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0.0, 0.0, tempFrame.size.width, 44.0)];
-    _searchBar.delegate = self;
+    UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0.0, 0.0, tempFrame.size.width, 44.0)];
+    searchBar.delegate = self;
     
-    if ([_searchBar respondsToSelector:@selector(setInputAccessoryView:)])
+    if ([searchBar respondsToSelector:@selector(setInputAccessoryView:)])
     {
-        _toolBar = [[UIToolbar alloc] initWithFrame:CGRectMake(0.0, 0.0, tempFrame.size.width, 34.0)];
+        UIToolbar *toolBar = [[UIToolbar alloc] initWithFrame:CGRectMake(0.0, 0.0, tempFrame.size.width, 34.0)];
         
         UIBarButtonItem *prevButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Prev"
                                                                            style:UIBarButtonItemStylePlain
@@ -50,24 +57,33 @@
         
         UIBarButtonItem *spacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
         
-        _countLabel = [[UILabel alloc] init];
-        _countLabel.textAlignment = NSTextAlignmentRight;
-        _countLabel.textColor = [UIColor grayColor];
+        UILabel *countLabel = [[UILabel alloc] init];
+        countLabel.textAlignment = NSTextAlignmentRight;
+        countLabel.textColor = [UIColor grayColor];
         
-        UIBarButtonItem *counter = [[UIBarButtonItem alloc] initWithCustomView:_countLabel];
+        UIBarButtonItem *counter = [[UIBarButtonItem alloc] initWithCustomView:countLabel];
         
-        _toolBar.items = [[NSArray alloc] initWithObjects:prevButtonItem, nextButtonItem, spacer, counter, nil];
+        toolBar.items = [[NSArray alloc] initWithObjects:prevButtonItem, nextButtonItem, spacer, counter, nil];
         
-        [(id)_searchBar setInputAccessoryView:_toolBar];
+        [(id)searchBar setInputAccessoryView:toolBar];
+        
+        self.toolBar = toolBar;
+        self.countLabel = countLabel;
     }
     
     UIView *mainView = [[UIView alloc] initWithFrame:tempFrame];
     
-    _textView = [[ICTextView alloc] initWithFrame:tempFrame];
-    _textView.font = [UIFont systemFontOfSize:14.0];
+    ICTextView *textView = [[ICTextView alloc] initWithFrame:tempFrame];
+    textView.font = [UIFont systemFontOfSize:14.0];
+    textView.circularSearch = YES;
+    textView.scrollPosition = ICTextViewScrollPositionMiddle;
+    textView.searchOptions = NSRegularExpressionCaseInsensitive;
     
-    [mainView addSubview:_textView];
-    [mainView addSubview:_searchBar];
+    [mainView addSubview:textView];
+    [mainView addSubview:searchBar];
+    
+    self.searchBar = searchBar;
+    self.textView = textView;
     self.view = mainView;
 }
 
@@ -77,23 +93,24 @@
     
     [self updateTextViewInsetsWithKeyboardNotification:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTextViewInsetsWithKeyboardNotification:) name:UIKeyboardWillChangeFrameNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(updateTextViewInsetsWithKeyboardNotification:)
+                                                 name:UIKeyboardWillChangeFrameNotification
+                                               object:nil];
     
-    _textView.circularSearch = YES;
-    _textView.scrollPosition = ICTextViewScrollPositionMiddle;
-    _textView.searchOptions = NSRegularExpressionCaseInsensitive;
+    ICTextView *textView = self.textView;
+	textView.text = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"ICTextView" ofType:@"h"]
+                                              encoding:NSASCIIStringEncoding
+                                                 error:NULL];
     
-	_textView.text = [NSString stringWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"ICTextView" ofType:@"h"] encoding:NSASCIIStringEncoding error:NULL];
-    
-    [_textView scrollRectToVisible:CGRectZero animated:NO consideringInsets:YES];
-    
+    [textView scrollRectToVisible:CGRectZero animated:NO consideringInsets:YES];
     [self updateCountLabel];
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
-    [_searchBar becomeFirstResponder];
+    [self.searchBar becomeFirstResponder];
 }
 
 - (void)dealloc
@@ -110,7 +127,7 @@
 
 - (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar
 {
-    [_textView becomeFirstResponder];
+    [self.textView becomeFirstResponder];
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
@@ -121,7 +138,7 @@
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
 {
     searchBar.text = nil;
-    [_textView resetSearch];
+    [self.textView resetSearch];
     [self updateCountLabel];
 }
 
@@ -139,21 +156,24 @@
 
 - (void)searchMatchInDirection:(ICTextViewSearchDirection)direction
 {
-    NSString *searchString = _searchBar.text;
+    NSString *searchString = self.searchBar.text;
     
     if (searchString.length)
-        [_textView scrollToString:searchString searchDirection:direction];
+        [self.textView scrollToString:searchString searchDirection:direction];
     else
-        [_textView resetSearch];
+        [self.textView resetSearch];
     
     [self updateCountLabel];
 }
 
 - (void)updateCountLabel
 {
-    NSUInteger numberOfMatches = _textView.numberOfMatches;
-    _countLabel.text = numberOfMatches ? [NSString stringWithFormat:@"%u/%u", _textView.indexOfFoundString + 1, numberOfMatches] : @"0/0";
-    [_countLabel sizeToFit];
+    ICTextView *textView = self.textView;
+    UILabel *countLabel = self.countLabel;
+    
+    NSUInteger numberOfMatches = textView.numberOfMatches;
+    countLabel.text = numberOfMatches ? [NSString stringWithFormat:@"%lu/%lu", (unsigned long)textView.indexOfFoundString + 1, (unsigned long)numberOfMatches] : @"0/0";
+    [countLabel sizeToFit];
 }
 
 #pragma mark - Keyboard
@@ -161,7 +181,7 @@
 - (void)updateTextViewInsetsWithKeyboardNotification:(NSNotification *)notification
 {
     UIEdgeInsets newInsets = UIEdgeInsetsZero;
-    newInsets.top = _searchBar.frame.size.height;
+    newInsets.top = self.searchBar.frame.size.height;
     
     if (notification)
     {
@@ -173,8 +193,9 @@
         newInsets.bottom = self.view.frame.size.height - keyboardFrame.origin.y;
     }
     
-    _textView.contentInset = newInsets;
-    _textView.scrollIndicatorInsets = newInsets;
+    ICTextView *textView = self.textView;
+    textView.contentInset = newInsets;
+    textView.scrollIndicatorInsets = newInsets;
 }
 
 @end
