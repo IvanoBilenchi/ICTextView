@@ -196,9 +196,11 @@ static BOOL shouldApplyTextContainerFix = NO;
         return NO;
     
     _searching = YES;
-    
+    NSUInteger index = _searchIndex - _cachedRange.location;
+    NSRange firstRange = [_regex rangeOfFirstCachedMatch];
+    NSRange lastRange = [_regex rangeOfLastCachedMatch];
     // Get match
-    if (_searchIndex == ICSearchIndexAuto)
+    if (_searchIndex == ICSearchIndexAuto || index > lastRange.location || index < firstRange.location)
     {
         if (searchDirection == ICTextViewSearchDirectionForward)
             [_regex rangeOfNextMatch];
@@ -207,7 +209,6 @@ static BOOL shouldApplyTextContainerFix = NO;
     }
     else
     {
-        NSUInteger index = _searchIndex - _cachedRange.location;
         
         if (searchDirection == ICTextViewSearchDirectionForward)
             [_regex rangeOfFirstMatchInRange:NSMakeRange(index, _regex.string.length - index)];

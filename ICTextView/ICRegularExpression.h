@@ -66,8 +66,20 @@
 - (id)initWithString:(NSString *)string pattern:(NSString *)pattern options:(NSRegularExpressionOptions)options error:(NSError *__autoreleasing *)error;
 
 - (NSRange)rangeOfCurrentMatch;
+
+/**
+ *  set 'indexOfCurrentMatch' as 0
+ *
+ *  @return the range of first match
+ */
 - (NSRange)rangeOfFirstMatch;
 - (NSRange)rangeOfFirstMatchInRange:(NSRange)range;
+
+/**
+ *  set 'indexOfCurrentMatch' as numberOfMatches - 1
+ *
+ *  @return the range of last match
+ */
 - (NSRange)rangeOfLastMatch;
 - (NSRange)rangeOfLastMatchInRange:(NSRange)range;
 - (NSRange)rangeOfMatchAtIndex:(NSUInteger)index;
@@ -75,4 +87,17 @@
 - (NSRange)rangeOfPreviousMatch;
 - (NSArray *)rangesOfMatchesInRange:(NSRange)range;
 
+/**
+ *  this methed will not change 'indexOfCurrentMatch'
+ *
+ *  @return the range of first match
+ */
+- (NSRange)rangeOfFirstCachedMatch;
+
+/**
+ *  this methed will not change 'indexOfCurrentMatch'
+ *
+ *  @return the range of last match
+ */
+- (NSRange)rangeOfLastCachedMatch;
 @end

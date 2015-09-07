@@ -182,12 +182,20 @@
     return (NSEqualRanges(indexRange, ICRangeNotFound) ? [NSArray array] : [_cachedMatchRanges subarrayWithRange:indexRange]);
 }
 
+- (NSRange)rangeOfFirstCachedMatch{
+    return [[_cachedMatchRanges firstObject] rangeValue];
+}
+
+- (NSRange)rangeOfLastCachedMatch{
+    return [[_cachedMatchRanges lastObject] rangeValue];
+}
+
+#pragma mark - Private methods
+
 - (void)setIndexOfCurrentMatch:(NSUInteger)indexOfCurrentMatch
 {
     _indexOfCurrentMatch = (indexOfCurrentMatch < self.numberOfMatches ? indexOfCurrentMatch : NSNotFound);
 }
-
-#pragma mark - Private methods
 
 - (NSUInteger)indexOfFirstMatchInRange:(NSRange)range
 {
