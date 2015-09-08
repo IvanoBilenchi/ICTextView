@@ -86,6 +86,20 @@
     _indexOfCurrentMatch = (indexOfCurrentMatch < self.numberOfMatches ? indexOfCurrentMatch : NSNotFound);
 }
 
+// matchLocationsRange
+@synthesize matchLocationsRange = _matchLocationsRange;
+
+- (NSRange)matchLocationsRange
+{
+    if (NSEqualRanges(_matchLocationsRange, ICRangeNotFound))
+    {
+        NSMutableArray *matches = self.cachedMatchRanges;
+        if (matches.count)
+            _matchLocationsRange = NSMakeRange([[matches objectAtIndex:0] rangeValue].location, [[matches lastObject] rangeValue].location);
+    }
+    return _matchLocationsRange;
+}
+
 // Others
 @synthesize circular = _circular;
 @synthesize regex = _regex;
@@ -107,6 +121,7 @@
             return nil;
         
         _indexOfCurrentMatch = NSNotFound;
+        _matchLocationsRange = ICRangeNotFound;
         _string = string ?: [NSString string];
     }
     return self;
@@ -197,16 +212,6 @@
 {
     NSRange indexRange = [self indexRangeOfMatchesInRange:range];
     return (NSEqualRanges(indexRange, ICRangeNotFound) ? [NSArray array] : [self.cachedMatchRanges subarrayWithRange:indexRange]);
-}
-
-- (NSRange)rangeOfFirstCachedMatch
-{
-    return [[self.cachedMatchRanges firstObject] rangeValue];
-}
-
-- (NSRange)rangeOfLastCachedMatch
-{
-    return [[self.cachedMatchRanges lastObject] rangeValue];
 }
 
 #pragma mark - Private methods

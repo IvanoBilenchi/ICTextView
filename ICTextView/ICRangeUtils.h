@@ -54,6 +54,11 @@ extern NSComparisonResult (^ICRangeComparator)(NSValue *rangeValue1, NSValue *ra
 
 #pragma mark - Functions
 
+NS_INLINE BOOL ICRangeContainsIndex (NSRange range, NSUInteger index)
+{
+    return (index >= range.location && index <= (range.location + range.length));
+}
+
 NS_INLINE BOOL ICRangeContainsRange (NSRange range1, NSRange range2)
 {
     return ((range1.location <= range2.location) && (range1.location + range1.length >= range2.location + range2.length));

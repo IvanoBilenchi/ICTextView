@@ -258,12 +258,9 @@ NS_INLINE BOOL ICCGFloatEqualOnScreen(CGFloat f1, CGFloat f2)
     NSUInteger searchIndex = self.searchIndex;
     
     NSUInteger index = ICSearchIndexAuto;
-    NSRange firstRange = [regex rangeOfFirstCachedMatch];
-    NSRange lastRange = [regex rangeOfLastCachedMatch];
     
-    if (searchIndex != ICSearchIndexAuto && index >= firstRange.location && index <= lastRange.location)
+    if (searchIndex != ICSearchIndexAuto && ICRangeContainsIndex(regex.matchLocationsRange, searchIndex))
         index = searchIndex - self.cachedRange.location;
-    
     
     // Get match
     if (index == ICSearchIndexAuto)
