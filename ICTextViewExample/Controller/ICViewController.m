@@ -5,6 +5,9 @@
 //  Created by Ivano Bilenchi on 05/11/13.
 //  Copyright (c) 2013 Ivano Bilenchi. All rights reserved.
 //
+//  Disclaimer: this is a sample app, so most of the logic is dropped here in the controller.
+//  In production apps, you want to move layout logic to UIView subclasses, and have a proper model layer.
+//
 
 #import "ICViewController.h"
 #import "ICTextView.h"
@@ -36,14 +39,15 @@
 
 - (void)loadView
 {
-    CGRect tempFrame = [UIScreen mainScreen].bounds;
+    [super loadView];
     
-    UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectMake(0.0, 0.0, tempFrame.size.width, 44.0)];
+    UISearchBar *searchBar = [[UISearchBar alloc] initWithFrame:CGRectZero];
+    self.searchBar = searchBar;
     searchBar.delegate = self;
     
     if ([searchBar respondsToSelector:@selector(setInputAccessoryView:)])
     {
-        UIToolbar *toolBar = [[UIToolbar alloc] initWithFrame:CGRectMake(0.0, 0.0, tempFrame.size.width, 34.0)];
+        UIToolbar *toolBar = [[UIToolbar alloc] initWithFrame:CGRectZero];
         
         UIBarButtonItem *prevButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Prev"
                                                                            style:UIBarButtonItemStylePlain
@@ -71,20 +75,15 @@
         self.countLabel = countLabel;
     }
     
-    UIView *mainView = [[UIView alloc] initWithFrame:tempFrame];
-    
-    ICTextView *textView = [[ICTextView alloc] initWithFrame:tempFrame];
+    ICTextView *textView = [[ICTextView alloc] initWithFrame:CGRectZero];
+    self.textView = textView;
     textView.font = [UIFont systemFontOfSize:14.0];
     textView.circularSearch = YES;
     textView.scrollPosition = ICTextViewScrollPositionMiddle;
     textView.searchOptions = NSRegularExpressionCaseInsensitive;
     
-    [mainView addSubview:textView];
-    [mainView addSubview:searchBar];
-    
-    self.searchBar = searchBar;
-    self.textView = textView;
-    self.view = mainView;
+    [self.view addSubview:textView];
+    [self.view addSubview:searchBar];
 }
 
 - (void)viewDidLoad
@@ -92,30 +91,43 @@
     [super viewDidLoad];
     
     [self updateTextViewInsetsWithKeyboardNotification:nil];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(updateTextViewInsetsWithKeyboardNotification:)
                                                  name:UIKeyboardWillChangeFrameNotification
                                                object:nil];
     
-    ICTextView *textView = self.textView;
     NSString *filePath = [[NSBundle mainBundle] pathForResource:@"ICTextView" ofType:@"h"];
     
     if (filePath)
     {
-        textView.text = [NSString stringWithContentsOfFile:filePath
-                                                  encoding:NSASCIIStringEncoding
-                                                     error:NULL];
+        self.textView.text = [NSString stringWithContentsOfFile:filePath
+                                                       encoding:NSASCIIStringEncoding
+                                                          error:NULL];
     }
     
-    [textView scrollRectToVisible:CGRectZero animated:NO consideringInsets:YES];
     [self updateCountLabel];
+}
+
+- (void)viewDidLayoutSubviews
+{
+    CGRect viewBounds = self.view.bounds;
+    
+    CGRect searchBarFrame = viewBounds;
+    searchBarFrame.size.height = 44.0f;
+    
+    CGRect toolBarFrame = viewBounds;
+    toolBarFrame.size.height = 34.0f;
+    
+    self.searchBar.frame = searchBarFrame;
+    self.toolBar.frame = toolBarFrame;
+    self.textView.frame = viewBounds;
 }
 
 - (void)viewDidAppear:(BOOL)animated
 {
     [super viewDidAppear:animated];
     [self.searchBar becomeFirstResponder];
+    [self.textView scrollRectToVisible:CGRectZero animated:YES consideringInsets:YES];
 }
 
 - (void)dealloc
