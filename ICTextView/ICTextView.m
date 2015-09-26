@@ -773,7 +773,7 @@ NS_INLINE BOOL ICCGFloatEqualOnScreen(CGFloat f1, CGFloat f2)
 - (void)scrollToY:(CGFloat)y animated:(BOOL)animated consideringInsets:(BOOL)considerInsets
 {
     CGFloat min = 0.0;
-    CGFloat max = self.contentSize.height - self.bounds.size.height;
+    CGFloat max = MAX(self.contentSize.height - self.bounds.size.height, 0.0f);
     
     if (considerInsets)
     {
