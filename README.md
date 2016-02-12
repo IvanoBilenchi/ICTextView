@@ -34,7 +34,7 @@ It also features some iOS 7+ specific improvements and bugfixes to the standard 
 
 ### Installation
 
-`ICTextView` can be installed via [Cocoapods](http://cocoapods.org) (just add `pod 'ICTextView'` to your Podfile, then run `pod install`) or as a [Git submodule](http://git-scm.com/book/en/Git-Tools-Submodules).
+`ICTextView` can be installed via [CocoaPods](http://cocoapods.org) (just add `pod 'ICTextView'` to your Podfile, then run `pod install`) or as a [Git submodule](http://git-scm.com/book/en/Git-Tools-Submodules).
 
 Alternatively, you can clone this repo, or even just grab the [ICTextView](ICTextView) folder and put it somewhere in your project.
 
